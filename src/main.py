@@ -1,3 +1,4 @@
+"""Главный модуль запуска приложения"""
 from pathlib import Path
 
 import uvicorn
@@ -16,7 +17,7 @@ app.include_router(auth_router)
 
 @app.get("/")
 def index() -> FileResponse:
-    """Точка входа"""
+    """Точка входа в приложение"""
     return FileResponse(BASE_DIR/"static/index.html")
 
 
