@@ -4,39 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-
-    <div class="registration-container">
+    <div class="registration-container" action="" method="POST" enctype="application/x-www-form-urlencoded">
         <form class="registration-form">
-            <h2>Создать аккаунт</h2>
-            <p class="form-subtitle">Заполните поля, чтобы зарегистрироваться</p>
-
+            <h2>Создание аккаунта</h2>
             <!-- Поле: Имя -->
             <div class="input-group">
                 <label for="username">Имя</label>
                 <input type="text" id="username" name="username" placeholder="Иван Иванов" required autocomplete="name">
             </div>
-
             <!-- Поле: Почта -->
             <div class="input-group">
                 <label for="email">Электронная почта</label>
                 <input type="email" id="email" name="email" placeholder="example@mail.com" required autocomplete="email">
             </div>
-
             <!-- Поле: Пароль -->
             <div class="input-group">
                 <label for="password">Пароль</label>
                 <input type="password" id="password" name="password" placeholder="Минимум 6 символов" required autocomplete="new-password">
             </div>
-
             <!-- Кнопка отправки -->
             <button type="submit" class="submit-btn">Зарегистрироваться</button>
-
             <p class="form-footer">Уже есть аккаунт? <a href="#">Войти</a></p>
         </form>
     </div>
-
 </body>
 </html>
