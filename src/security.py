@@ -43,7 +43,7 @@ def create_access_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
-    expire = datetime.timetz.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(datetime.timetz()) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     data["exp"] = expire
     token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token
