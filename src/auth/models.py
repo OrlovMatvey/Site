@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
         """Выводит поля для модели
 
         Returns:
-            list: _description_
+            list: Список полей модели
         """
         return [a.name for a in cls.__table__.columns]
 
