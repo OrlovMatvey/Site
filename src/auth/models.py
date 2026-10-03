@@ -1,4 +1,4 @@
-"""Модуль ORM-моделей базы данных для сервиса регистрации пользователей"""
+"""Модуль ORM-моделей БД для сервиса Регистрации/Авторизации"""
 from datetime import date
 
 from sqlalchemy import ForeignKey, String
@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
     """Базовый класс для моделей"""
     @classmethod
     def fields(cls) -> list:
-        """Выводит поля для модели
+        """Вывод полей для модели
 
         Returns:
             list: Список полей модели

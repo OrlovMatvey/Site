@@ -1,15 +1,27 @@
-from fastapi import APIRouter, Response
+"""Модуль эндпоинтов для сервиса Регистрации/Авторизации"""
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
 
-from .service import create_user
+from dependencies import get_db
+
 from .schemas import AuthenticateModel
+from .service import auth_user, new_user
 
-router = APIRouter(tags=['Authentication'])
+router = APIRouter(prefix="Auth", tags=['AccessControl'])
 
 
-@router.post("/auth")
-def authenticate(request: AuthenticateModel, response: Response) -> RedirectResponse:
-    create_user(request.model_dump())
+@router.post("/UserUp")
+def up_user(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
+    new_user(request.model_dump())
+    response.set_cookie()
+    response.set_cookie()
+    return RedirectResponse(url="/")
+
+
+@router.post("/UserIn")
+def in_user(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
+    auth_user(request.model_dump())
     response.set_cookie()
     response.set_cookie()
     return RedirectResponse(url="/")

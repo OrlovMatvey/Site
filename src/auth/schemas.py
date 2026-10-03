@@ -1,3 +1,4 @@
+"""Модуль Pydantic схем для сервиса Регистрации/Авторизации"""
 from pydantic import BaseModel
 
 
