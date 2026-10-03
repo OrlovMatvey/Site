@@ -1,4 +1,3 @@
-import fastapi
 
-app = fastapi.FastAPI()
-
+def create_user(data: dict) -> dict:
+    

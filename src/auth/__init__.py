@@ -1,5 +1,5 @@
-from .router import router as auth_router
 from .models import Base, UserData, UserTokens
+from .router import router as auth_router
 
 __all__ = [
     "UserData",
