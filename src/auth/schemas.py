@@ -1,7 +1,8 @@
+"""Модуль Pydantic схем для сервиса Регистрации/Авторизации"""
 from pydantic import BaseModel
 
 
-class UserUpModel(BaseModel):
+class AuthenticateModel(BaseModel):
     username: str
     email: str
     password: str
