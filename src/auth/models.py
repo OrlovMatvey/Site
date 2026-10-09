@@ -9,10 +9,13 @@ class Base(DeclarativeBase):
     """Базовый класс для моделей"""
     @classmethod
     def fields(cls) -> list:
-        """Выводит поля для модели
+        """Функция для получения полей модели
+
+        Args:
+            cls: Класс модели
 
         Returns:
-            list: _description_
+            list: Список полей модели
         """
         return [a.name for a in cls.__table__.columns]
 

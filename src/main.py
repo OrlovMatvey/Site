@@ -17,7 +17,11 @@ app.include_router(auth_router)
 
 @app.get("/")
 def index() -> FileResponse:
-    """Точка входа в приложение"""
+    """Точка входа
+
+    Returns:
+        FileResponse: Файл главной страницы
+    """
     return FileResponse(BASE_DIR/"static/index.html")
 
 
