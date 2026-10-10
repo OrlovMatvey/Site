@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from auth import auth_router
+from src.auth import auth_router
 
 app = FastAPI()
 BASE_DIR = Path(__file__).resolve().parent

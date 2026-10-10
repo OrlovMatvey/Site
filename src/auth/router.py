@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from dependencies import get_db
+from src.dependencies import get_db
 
 from .schemas import AuthenticateModel
 from .service import auth_user, new_user
@@ -13,16 +13,15 @@ router = APIRouter(prefix="Auth", tags=['AccessControl'])
 
 @router.post("/UserUp")
 def up_user(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
-    new_user(request.model_dump())
-    response.set_cookie()
-    response.set_cookie()
+    coockie_data = new_user(request.username, request.email, request.password, db)
+    response.set_cookie(key="access_token", value=coockie_data["access_token"], max_age=coockie_data["expires_in"])
+    response.set_cookie(key="refresh_token", value=coockie_data["refresh_token"])
     return RedirectResponse(url="/")
 
 
 @router.post("/UserIn")
 def in_user(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
-    auth_user(request.model_dump())
-    response.set_cookie()
-    response.set_cookie()
+    coockie_data = auth_user(request.username, request.email, request.password, db)
+    response.set_cookie(key="access_token", value=coockie_data["access_token"], max_age=coockie_data["expires_in"])
+    response.set_cookie(key="refresh_token", value=coockie_data["refresh_token"])
     return RedirectResponse(url="/")
->>>>>>> cbea4c1a8eee79ca0c991f04ab38dc5d4248b6f5

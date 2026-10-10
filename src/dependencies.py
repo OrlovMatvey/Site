@@ -3,7 +3,7 @@ from collections.abc import Iterator
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from database import engine
+from src.database import engine
 
 session = sessionmaker(engine)
 
