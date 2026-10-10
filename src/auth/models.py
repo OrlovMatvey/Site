@@ -9,14 +9,7 @@ class Base(DeclarativeBase):
     """Базовый класс для моделей"""
     @classmethod
     def fields(cls) -> list:
-<<<<<<< HEAD
-        """Функция для получения полей модели
-
-        Args:
-            cls: Класс модели
-=======
         """Вывод полей для модели
->>>>>>> cbea4c1a8eee79ca0c991f04ab38dc5d4248b6f5
 
         Returns:
             list: Список полей модели

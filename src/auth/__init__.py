@@ -3,6 +3,7 @@ from .models import Base, UserData, UserTokens
 from .router import router as auth_router
 
 __all__ = [
+    "Base",
     "UserData",
     "UserTokens",
     "auth_router",

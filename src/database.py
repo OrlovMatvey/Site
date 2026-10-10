@@ -1,8 +1,8 @@
 """Модуль для инициализации базы данных"""
 from sqlalchemy import create_engine
 
-from auth import Base
-from config import settings
+from src.auth import Base
+from src.config import settings
 
 engine = create_engine(settings.DB_URL, echo=True)
 
