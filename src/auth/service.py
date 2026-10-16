@@ -1,15 +1,21 @@
 """Модуль бизнес-логики для сервиса Регистрации/Авторизации"""
+from datetime import datetime
+
 from sqlalchemy import select
 
-from src.dependencies import get_db
+from src.config import settings
 from src.security import (
     create_access_token,
     create_refresh_token,
+    decode_token,
     hash_password,
     verify_password,
 )
 
-from .models import UserData
+from .models import UserData, UserToken
+
+SECONDS_IN_MINUTE = 60
+SECONDS_IN_DAY = 86400
 
 
 def new_user(username: str, email: str, password: str, db) -> dict:
@@ -34,12 +40,13 @@ def new_user(username: str, email: str, password: str, db) -> dict:
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
-        "expires_in": 3600,
+        "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*SECONDS_IN_MINUTE,
+        "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*SECONDS_IN_DAY,
         "token_type": "bearer"
     }
 
 
-def auth_user(username: str, email: str, password: str, db) -> dict:
+def auth_user(email: str, password: str, db) -> dict:
     """Авторизация старого пользователя
 
     Args:
@@ -51,21 +58,44 @@ def auth_user(username: str, email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    user_object = db.scalars(select(UserData).where(UserData.email == email)).one()
-    if verify_password(password, user_object.password):
-        access_token = create_access_token({"sub": user_object.id})
-        refresh_token = create_refresh_token({"sub": user_object.id})
-        join_user_token(refresh_token)
-        return {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "expires_in": 3600,
-            "token_type": "bearer"
-        }
+    if db.scalars(select(UserData).where(UserData.email == email)).one():
+        user_object = db.scalars(select(UserData).where(UserData.email == email)).one()
+        if verify_password(password, user_object.password):
+            access_token = create_access_token({"sub": user_object.id})
+            refresh_token = create_refresh_token({"sub": user_object.id})
+            join_user_token(refresh_token, db)
+            return {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*SECONDS_IN_MINUTE,
+                "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*SECONDS_IN_DAY,
+                "token_type": "bearer"
+            }
+        else:
+            pass
+    else:
+        pass
 
 
-def join_user_token():
-    pass
+def join_user_token(refresh_token: str, db):
+    """Привязка токена к пользователю
 
-
-auth_user("Deceptor", "deceptor27@mail.ru", "password", db=next(get_db()))
+    Args:
+        refresh_token (str): refresh токен
+        db (_type_): Объект сессии БД
+    """
+    data = decode_token(refresh_token)
+    if db.scalars(select(UserToken).where(UserToken.user_id == data["sub"])).one():
+        usertoken_object = db.scalars(select(UserToken).where(UserToken.id == data["sub"])).one()
+        usertoken_object.token = refresh_token
+        usertoken_object.created_at = datetime.timetz.now()
+        usertoken_object.expires_at = datetime.fromtimestamp(data["exp"])
+    else:
+        usertoken_object = UserToken(
+            refresh_token,
+            datetime.timetz.now(),
+            datetime.fromtimestamp(data["exp"]),
+            data["sub"]
+        )
+        db.add(usertoken_object)
+    db.commit()

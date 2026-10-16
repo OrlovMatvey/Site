@@ -1,10 +1,14 @@
 """Модуль инициализации пакета для сервиса Регистрации/Авторизации"""
-from .models import Base, UserData, UserTokens
+from .models import (
+    Base,
+    UserData,
+    UserToken,
+)
 from .router import router as auth_router
 
 __all__ = [
     "Base",
     "UserData",
-    "UserTokens",
+    "UserToken",
     "auth_router",
 ]

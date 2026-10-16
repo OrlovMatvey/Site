@@ -58,7 +58,7 @@ def create_refresh_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
-    expire = datetime.timetz.now() + timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.timetz.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     data["exp"] = expire
     token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token
