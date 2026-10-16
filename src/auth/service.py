@@ -1,10 +1,6 @@
 """Модуль бизнес-логики для сервиса Регистрации/Авторизации"""
 from sqlalchemy import select
 
-<<<<<<< HEAD
-
-def auth_user(data: dict) -> dict:
-=======
 from src.dependencies import get_db
 from src.security import (
     create_access_token,
@@ -73,4 +69,3 @@ def join_user_token():
 
 
 auth_user("Deceptor", "deceptor27@mail.ru", "password", db=next(get_db()))
->>>>>>> a9173897bc69bbaffaab35000f0486b220e26b48
