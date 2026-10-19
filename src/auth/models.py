@@ -18,7 +18,7 @@ class UserData(Base):
     is_admin: Mapped[bool] = mapped_column(default=False)
 
 
-class UserToken(Base):
+class UserTokenData(Base):
     """Модель для таблицы с токенами пользователей"""
     __tablename__ = "UserTokens"
 

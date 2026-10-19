@@ -39,6 +39,7 @@ class FavoriteReceptData(Base):
 
 class IngredientData(Base):
     """Модель для таблицы с ингредиентами"""
+    __tablename__ = "IngredientData"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[int] = mapped_column(String(50))
@@ -46,6 +47,7 @@ class IngredientData(Base):
 
 class CategoryData(Base):
     """Модель для таблицы с категориями"""
+    __tablename__ = "CategoryData"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[int] = mapped_column(String(50))

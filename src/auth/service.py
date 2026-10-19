@@ -12,7 +12,7 @@ from src.security import (
     verify_password,
 )
 
-from .models import UserData, UserToken
+from .models import UserData, UserTokenData
 
 SECONDS_IN_MINUTE = 60
 SECONDS_IN_DAY = 86400
@@ -85,13 +85,13 @@ def join_user_token(refresh_token: str, db):
         db (_type_): Объект сессии БД
     """
     data = decode_token(refresh_token)
-    if db.scalars(select(UserToken).where(UserToken.user_id == data["sub"])).one():
-        usertoken_object = db.scalars(select(UserToken).where(UserToken.id == data["sub"])).one()
+    if db.scalars(select(UserTokenData).where(UserTokenData.user_id == data["sub"])).one():
+        usertoken_object = db.scalars(select(UserTokenData).where(UserTokenData.id == data["sub"])).one()
         usertoken_object.token = refresh_token
         usertoken_object.created_at = datetime.timetz.now()
         usertoken_object.expires_at = datetime.fromtimestamp(data["exp"])
     else:
-        usertoken_object = UserToken(
+        usertoken_object = UserTokenData(
             refresh_token,
             datetime.timetz.now(),
             datetime.fromtimestamp(data["exp"]),

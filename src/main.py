@@ -15,7 +15,7 @@ app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
 app.include_router(auth_router)
 
 
-@app.get("/")
+@app.get("/as")
 def index() -> FileResponse:
     """Точка входа
 
@@ -26,4 +26,4 @@ def index() -> FileResponse:
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run("src.main:app", reload=True)

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная — Поварской Клуб</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body class="main-layout">
+
+    <!-- Верхнее навигационное меню -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">🍽️ Кулинар</a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="active">Главная</a></li>
+                <li><a href="profile.html">Мой профиль</a></li>
+                <li><a href="#">Выйти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <main class="content-container">
+        
+        <div class="page-header">
+            <h1>Свежие рецепты</h1>
+            <a href="#" class="btn-small">+ Добавить рецепт</a>
+        </div>
+
+        <!-- Сетка с карточками -->
+        <div class="recipes-grid">
+            
+            <!-- Карточка 1 -->
+            <article class="recipe-card">
+                <img src="https://unsplash.com" alt="Пицца" class="recipe-image">
+                <div class="recipe-info">
+                    <h3 class="recipe-title">Домашняя пицца Маргарита</h3>
+                    <p class="recipe-description">Классический итальянский рецепт с хрустящей корочкой, сочными томатами и нежной моцареллой.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 30 мин</span>
+                        <span>👤 от Ивана</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Карточка 2 -->
+            <article class="recipe-card">
+                <img src="https://unsplash.com" alt="Салат" class="recipe-image">
+                <div class="recipe-info">
+                    <h3 class="recipe-title">Салат Цезарь с курицей</h3>
+                    <p class="recipe-description">Популярный салат с хрустящими листьями ромэн, гренками, пармезаном и фирменным соусом.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 20 мин</span>
+                        <span>👤 от Анны</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Карточка 3 -->
+            <article class="recipe-card">
+                <img src="https://unsplash.com" alt="Пончики" class="recipe-image">
+                <div class="recipe-info">
+                    <h3 class="recipe-title">Пончики в глазури</h3>
+                    <p class="recipe-description">Пышные домашние пончики. Сверху покрыты сладкой шоколадной глазурью и цветной посыпкой.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 45 мин</span>
+                        <span>👤 от Шефа</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+</body>
+</html>

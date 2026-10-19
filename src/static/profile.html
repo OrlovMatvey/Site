@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль — Поварской Клуб</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body class="main-layout">
+
+    <!-- Верхнее навигационное меню -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-logo">🍽️ Кулинар</a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="profile.html" class="active">Мой профиль</a></li>
+                <li><a href="#">Выйти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент страницы -->
+    <main class="content-container">
+        
+        <!-- Блок профиля автора -->
+        <section class="profile-block">
+            <div class="profile-avatar">ИИ</div>
+            <div class="profile-details">
+                <h2>Иван Иванов</h2>
+                <p>Электронная почта: ivan@mail.com</p>
+                <p>Добавлено рецептов: 2</p>
+            </div>
+        </section>
+
+        <div class="page-header">
+            <h1>Мои фирменные рецепты</h1>
+            <a href="#" class="btn-small">+ Новый рецепт</a>
+        </div>
+
+        <!-- Сетка с карточками пользователя -->
+        <div class="recipes-grid">
+            
+            <!-- Карточка пользователя 1 -->
+            <article class="recipe-card">
+                <img src="https://unsplash.com" alt="Пицца" class="recipe-image">
+                <div class="recipe-info">
+                    <h3 class="recipe-title">Домашняя пицца Маргарита</h3>
+                    <p class="recipe-description">Классический итальянский рецепт с хрустящей корочкой, сочными томатами и нежной моцареллой.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 30 мин</span>
+                        <span>✍️ Редактировать</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Карточка пользователя 2 -->
+            <article class="recipe-card">
+                <img src="https://unsplash.com" alt="Панкейки" class="recipe-image">
+                <div class="recipe-info">
+                    <h3 class="recipe-title">Американские панкейки</h3>
+                    <p class="recipe-description">Нежные и пышные блинчики на кефире. Отлично сочетаются с кленовым сиропом или медом.</p>
+                    <div class="recipe-meta">
+                        <span>⏱️ 15 мин</span>
+                        <span>✍️ Редактировать</span>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+</body>
+</html>

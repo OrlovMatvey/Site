@@ -2,13 +2,13 @@
 from .models import (
     Base,
     UserData,
-    UserToken,
+    UserTokenData,
 )
 from .router import router as auth_router
 
 __all__ = [
     "Base",
     "UserData",
-    "UserToken",
+    "UserTokenData",
     "auth_router",
 ]

@@ -17,12 +17,3 @@ class Base(DeclarativeBase):
             list: Список полей модели
         """
         return [a.name for a in cls.__table__.columns]
-
-
-def create_db() -> None:
-    """Создание и обновление БД"""
-    Base.metadata.create_all(engine)
-
-
-if __name__ == "__main__":
-    create_db()
