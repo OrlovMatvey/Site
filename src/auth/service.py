@@ -1,7 +1,7 @@
 """Модуль бизнес-логики для сервиса Регистрации/Авторизации"""
-from datetime import datetime
+from datetime import UTC, datetime
 
-from sqlalchemy import select
+from sqlalchemy import exists, select
 
 from src.config import settings
 from src.security import (
@@ -31,12 +31,16 @@ def new_user(username: str, email: str, password: str, db) -> dict:
         dict: Словарь с данными для coockie
     """
     hashed_password = hash_password(password)
-    user_object = UserData(username, email, hashed_password)
+    user_object = UserData(
+        username=username,
+        email=email,
+        hash_password=hashed_password
+    )
     db.add(user_object)
     db.commit()
-    access_token = create_access_token({"sub": user_object.id})
-    refresh_token = create_refresh_token({"sub": user_object.id})
-    join_user_token(refresh_token)
+    access_token = create_access_token({"sub": str(user_object.id)})
+    refresh_token = create_refresh_token({"sub": str(user_object.id)})
+    join_user_token(refresh_token, db)
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -59,10 +63,12 @@ def auth_user(email: str, password: str, db) -> dict:
         dict: Словарь с данными для coockie
     """
     if db.scalars(select(UserData).where(UserData.email == email)).one():
-        user_object = db.scalars(select(UserData).where(UserData.email == email)).one()
+        user_object = db.scalars(
+            select(UserData).where(UserData.email == email)
+        ).one()
         if verify_password(password, user_object.password):
-            access_token = create_access_token({"sub": user_object.id})
-            refresh_token = create_refresh_token({"sub": user_object.id})
+            access_token = create_access_token({"sub": str(user_object.id)})
+            refresh_token = create_refresh_token({"sub": str(user_object.id)})
             join_user_token(refresh_token, db)
             return {
                 "access_token": access_token,
@@ -85,17 +91,18 @@ def join_user_token(refresh_token: str, db):
         db (_type_): Объект сессии БД
     """
     data = decode_token(refresh_token)
-    if db.scalars(select(UserTokenData).where(UserTokenData.user_id == data["sub"])).one():
-        usertoken_object = db.scalars(select(UserTokenData).where(UserTokenData.id == data["sub"])).one()
+    if db.scalar(select(exists().where(UserTokenData.user_id == data["sub"]))):
+        usertoken_object = db.scalars(
+            select(UserTokenData).where(UserTokenData.id == data["sub"])
+        ).one()
         usertoken_object.token = refresh_token
-        usertoken_object.created_at = datetime.timetz.now()
+        usertoken_object.created_at = datetime.now(UTC)
         usertoken_object.expires_at = datetime.fromtimestamp(data["exp"])
     else:
         usertoken_object = UserTokenData(
-            refresh_token,
-            datetime.timetz.now(),
-            datetime.fromtimestamp(data["exp"]),
-            data["sub"]
-        )
+            token=refresh_token,
+            created_at=datetime.now(UTC),
+            expired_at=datetime.fromtimestamp(data["exp"]),
+            user_id=data["sub"])
         db.add(usertoken_object)
     db.commit()

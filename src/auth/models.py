@@ -12,7 +12,7 @@ class UserData(Base):
     __tablename__ = "UserData"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(40))
+    username: Mapped[str] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(40))
     hash_password: Mapped[str]
     is_admin: Mapped[bool] = mapped_column(default=False)

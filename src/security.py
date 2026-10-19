@@ -1,12 +1,12 @@
 """Модуль для функций криптографии"""
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from jose import jwt
-from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
 from src.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"])
+pwd_context = PasswordHash.recommended()
 
 
 def hash_password(password: str) -> str:
@@ -43,7 +43,7 @@ def create_access_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
-    expire = datetime.now(datetime.timetz()) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     data["exp"] = expire
     token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token
@@ -58,7 +58,7 @@ def create_refresh_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
-    expire = datetime.timetz.now() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     data["exp"] = expire
     token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token

@@ -2,7 +2,7 @@
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Cookie
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -15,14 +15,17 @@ app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
 app.include_router(auth_router)
 
 
-@app.get("/as")
-def index() -> FileResponse:
+@app.get("/")
+def index(refresh_token: str = Cookie()) -> FileResponse:
     """Точка входа
 
     Returns:
         FileResponse: Файл главной страницы
     """
-    return FileResponse(BASE_DIR/"static/index.html")
+    if refresh_token:
+        return FileResponse(BASE_DIR/"static/main.html")
+    else:
+        return FileResponse(BASE_DIR/"static/index.html")
 
 
 if __name__ == "__main__":
