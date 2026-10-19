@@ -30,24 +30,27 @@ def new_user(username: str, email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    hashed_password = hash_password(password)
-    user_object = UserData(
-        username=username,
-        email=email,
-        hash_password=hashed_password
-    )
-    db.add(user_object)
-    db.commit()
-    access_token = create_access_token({"sub": str(user_object.id)})
-    refresh_token = create_refresh_token({"sub": str(user_object.id)})
-    join_user_token(refresh_token, db)
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*SECONDS_IN_MINUTE,
-        "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*SECONDS_IN_DAY,
-        "token_type": "bearer"
-    }
+    if (db.scalar(select(exists().where(UserData.email == email)))):
+        pass
+    else:
+        hashed_password = hash_password(password)
+        user_object = UserData(
+            username=username,
+            email=email,
+            hash_password=hashed_password
+        )
+        db.add(user_object)
+        db.commit()
+        access_token = create_access_token({"sub": str(user_object.id)})
+        refresh_token = create_refresh_token({"sub": str(user_object.id)})
+        join_user_token(refresh_token, db)
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*SECONDS_IN_MINUTE,
+            "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*SECONDS_IN_DAY,
+            "token_type": "bearer"
+        }
 
 
 def auth_user(email: str, password: str, db) -> dict:
@@ -62,7 +65,7 @@ def auth_user(email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    if db.scalars(select(UserData).where(UserData.email == email)).one():
+    if (db.scalar(select(exists().where(UserData.email == email)))):
         user_object = db.scalars(
             select(UserData).where(UserData.email == email)
         ).one()

@@ -2,7 +2,7 @@
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, Cookie
+from fastapi import Cookie, FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
