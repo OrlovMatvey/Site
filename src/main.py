@@ -23,9 +23,9 @@ def index(refresh_token: str = Cookie()) -> FileResponse:
         FileResponse: Файл главной страницы
     """
     if refresh_token:
-        return FileResponse(BASE_DIR/"static/main.html")
-    else:
         return FileResponse(BASE_DIR/"static/index.html")
+    else:
+        return FileResponse(BASE_DIR/"static/user_up.html")
 
 
 if __name__ == "__main__":

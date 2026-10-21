@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="registration-container">
+        <form class="registration-form" action="http://127.0.0.1:8000/Auth/UserUp" method="POST" enctype="application/x-www-form-urlencoded">
+            <h2>Создание аккаунта</h2>
+            <!-- Поле: Имя -->
+            <div class="input-group">
+                <label for="username">Имя</label>
+                <input type="text" id="username" name="username" placeholder="Иван Иванов" required autocomplete="name">
+            </div>
+            <!-- Поле: Почта -->
+            <div class="input-group">
+                <label for="email">Электронная почта</label>
+                <input type="email" id="email" name="email" placeholder="example@mail.com" required autocomplete="email">
+            </div>
+            <!-- Поле: Пароль -->
+            <div class="input-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" placeholder="Минимум 6 символов" required autocomplete="new-password">
+            </div>
+            <!-- Кнопка отправки -->
+            <button type="submit" class="submit-btn">Зарегистрироваться</button>
+            <p class="form-footer">Уже есть аккаунт? <a href="#">Войти</a></p>
+        </form>
+    </div>
+</body>
+</html>
