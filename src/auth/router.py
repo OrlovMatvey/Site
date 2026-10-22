@@ -7,13 +7,13 @@ from src.config import settings
 from src.dependencies import get_db
 
 from .schemas import AuthenticateModel
-from .service import auth_user, new_user
+from .service import authenticate_user, create_new_user
 
 router = APIRouter(prefix="/Auth", tags=['AccessControl'])
 
 
-@router.post("/UserUp")
-def up_user(request: AuthenticateModel = Depends(AuthenticateModel.formBody), db: Session = Depends(get_db)) -> RedirectResponse:
+@router.post("/SignUp")
+def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody), db: Session = Depends(get_db)) -> RedirectResponse:
     """Эндпоинт для регистрации пользователя
 
     Args:
@@ -24,7 +24,7 @@ def up_user(request: AuthenticateModel = Depends(AuthenticateModel.formBody), db
     Returns:
         RedirectResponse: Редирект на главную страницу
     """
-    coockie_data: dict = new_user(
+    coockie_data: dict = create_new_user(
         request.username, request.email, request.password, db
     )
     redirect_response = RedirectResponse(url="/", status_code=303)
@@ -45,8 +45,8 @@ def up_user(request: AuthenticateModel = Depends(AuthenticateModel.formBody), db
     return redirect_response
 
 
-@router.post("/UserIn")
-def in_user(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
+@router.post("/SignIn")
+def login(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
     """Эндпоинт для авторизации пользователя
 
     Args:
@@ -57,7 +57,7 @@ def in_user(request: AuthenticateModel, response: Response, db: Session = Depend
     Returns:
         RedirectResponse: Редирект на главную страницу
     """
-    coockie_data = auth_user(request.email, request.password, db)
+    coockie_data = authenticate_user(request.email, request.password, db)
     redirect_response = RedirectResponse(url="/", status_code=303)
     redirect_response.set_cookie(
         key="access_token",
@@ -72,8 +72,8 @@ def in_user(request: AuthenticateModel, response: Response, db: Session = Depend
     return redirect_response
 
 
-@router.get("/UserUp")
-def registr_page(request: Request) -> HTMLResponse:
+@router.get("/SignUp")
+def get_register_page(request: Request) -> HTMLResponse:
     """Эндпоинт для получения страницы регистрации
 
     Args:
@@ -85,8 +85,8 @@ def registr_page(request: Request) -> HTMLResponse:
     return settings.TEMPLATES.TemplateResponse(request=request, name="user_up.html")
 
 
-@router.get("/UserIn")
-def login_page(request: Request) -> HTMLResponse:
+@router.get("/SignIn")
+def get_login_page(request: Request) -> HTMLResponse:
     """Эндпоинт для получения страницы авторизации
 
     Args:

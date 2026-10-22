@@ -43,6 +43,7 @@ def create_access_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
+    data = data.copy()
     expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     data["exp"] = expire
     token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
@@ -58,6 +59,7 @@ def create_refresh_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
+    data = data.copy()
     expire = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     data["exp"] = expire
     token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)

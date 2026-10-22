@@ -2,16 +2,31 @@
 from pathlib import Path
 
 import uvicorn
-from fastapi import Cookie, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.auth import auth_router
+from src.dependencies import is_authenticated
 from src.recept_service import service_router
 
 app = FastAPI()
 
 BASE_DIR = Path(__file__).absolute().parent
+
+
+@app.exception_handler(401)
+async def auth_exception_handler(request: Request, exc: HTTPException) -> RedirectResponse:
+    """Обработчик для исключения с кодом 401
+
+    Args:
+        request (Request): Тело запроса
+        exc (HTTPException): Исключение
+
+    Returns:
+        RedirectResponse: Редирект на страницу регистрации
+    """
+    return RedirectResponse(url="/Auth/SignUp", status_code=303)
 
 app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
 app.include_router(auth_router)
@@ -19,20 +34,16 @@ app.include_router(service_router)
 
 
 @app.get("/")
-def main(request: Request, refresh_token: str = Cookie(None)) -> RedirectResponse:
+def main(request: Request, authenticated: bool = Depends(is_authenticated)) -> RedirectResponse:
     """Точка входа в приложение
 
     Args:
         request (Request): Тело запроса
-        refresh_token (str, optional): Refresh токен из куки
 
     Returns:
-        RedirectResponse: Редирект на другую страницу
+        RedirectResponse: Редирект на главную страницу
     """
-    if refresh_token:
-        return RedirectResponse(url="/Service/Main", status_code=303)
-    else:
-        return RedirectResponse(url="/Auth/UserUp", status_code=303)
+    return RedirectResponse(url="/Service/Main", status_code=303)
 
 
 if __name__ == "__main__":

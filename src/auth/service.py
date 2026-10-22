@@ -18,7 +18,7 @@ SECONDS_IN_MINUTE = 60
 SECONDS_IN_DAY = 86400
 
 
-def new_user(username: str, email: str, password: str, db) -> dict:
+def create_new_user(username: str, email: str, password: str, db) -> dict:
     """Создание нового пользователя
 
     Args:
@@ -53,7 +53,7 @@ def new_user(username: str, email: str, password: str, db) -> dict:
         }
 
 
-def auth_user(email: str, password: str, db) -> dict:
+def authenticate_user(email: str, password: str, db) -> dict:
     """Авторизация старого пользователя
 
     Args:

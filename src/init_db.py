@@ -10,11 +10,11 @@ from src.recept_service import (
 )
 
 
-def create_db() -> None:
-    """Создание и обновление БД"""
+def create_db_tables() -> None:
+    """Создание таблиц в бд"""
     Base.metadata.create_all(engine)
     print("Tables successful created")
 
 
 if __name__ == "__main__":
-    create_db()
+    create_db_tables()
