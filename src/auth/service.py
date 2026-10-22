@@ -14,9 +14,6 @@ from src.security import (
 
 from .models import UserData, UserTokenData
 
-SECONDS_IN_MINUTE = 60
-SECONDS_IN_DAY = 86400
-
 
 def create_new_user(username: str, email: str, password: str, db) -> dict:
     """Создание нового пользователя
@@ -47,8 +44,8 @@ def create_new_user(username: str, email: str, password: str, db) -> dict:
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
-            "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*SECONDS_IN_MINUTE,
-            "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*SECONDS_IN_DAY,
+            "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*settings.SECONDS_IN_MINUTE,
+            "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*settings.SECONDS_IN_DAY,
             "token_type": "bearer"
         }
 

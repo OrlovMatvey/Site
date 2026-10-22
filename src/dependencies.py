@@ -40,13 +40,7 @@ def is_authenticated(request: Request, response: Response, db: Session = Depends
             )))
             if db_token:
                 new_access_token = create_access_token({"sub": user_id})
-                response.set_cookie(
-                    key="access_token",
-                    value=new_access_token["access_token"],
-                    domain="127.0.0.1",
-                    httponly=True,
-                    max_age=new_access_token["access_expires_in"]
-                )
+                request.state.new_access_token = new_access_token
                 return True
 
     raise HTTPException(status_code=401, detail="Пользователь не авторизован")

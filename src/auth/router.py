@@ -1,10 +1,11 @@
 """Модуль эндпоинтов для сервиса Регистрации/Авторизации"""
 from fastapi import APIRouter, Depends, Request, Response
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from src.config import settings
-from src.dependencies import get_db
+from src.dependencies import get_db, is_authenticated
+from src.security import decode_token
 
 from .schemas import AuthenticateModel
 from .service import authenticate_user, create_new_user
@@ -13,7 +14,8 @@ router = APIRouter(prefix="/Auth", tags=['AccessControl'])
 
 
 @router.post("/SignUp")
-def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody), db: Session = Depends(get_db)) -> RedirectResponse:
+def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody),
+             db: Session = Depends(get_db)) -> RedirectResponse:
     """Эндпоинт для регистрации пользователя
 
     Args:
@@ -31,14 +33,12 @@ def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody), d
     redirect_response.set_cookie(
         key="access_token",
         value=coockie_data["access_token"],
-        domain="127.0.0.1",
         httponly=True,
         max_age=coockie_data["access_expires_in"]
     )
     redirect_response.set_cookie(
         key="refresh_token",
         value=coockie_data["refresh_token"],
-        domain="127.0.0.1",
         httponly=True,
         max_age=coockie_data["refresh_expires_in"]
     )
@@ -46,7 +46,9 @@ def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody), d
 
 
 @router.post("/SignIn")
-def login(request: AuthenticateModel, response: Response, db: Session = Depends(get_db)) -> RedirectResponse:
+def login(request: AuthenticateModel, 
+          response: Response, 
+          db: Session = Depends(get_db)) -> RedirectResponse:
     """Эндпоинт для авторизации пользователя
 
     Args:
@@ -73,7 +75,7 @@ def login(request: AuthenticateModel, response: Response, db: Session = Depends(
 
 
 @router.get("/SignUp")
-def get_register_page(request: Request) -> HTMLResponse:
+def get_register_page(request: Request) -> Response:
     """Эндпоинт для получения страницы регистрации
 
     Args:
@@ -82,11 +84,14 @@ def get_register_page(request: Request) -> HTMLResponse:
     Returns:
         HTMLResponse: Страница регистрации
     """
+    access_token = request.cookies.get("access_token")
+    if access_token and decode_token(access_token):
+        return RedirectResponse(url="/", status_code=303)
     return settings.TEMPLATES.TemplateResponse(request=request, name="user_up.html")
 
 
 @router.get("/SignIn")
-def get_login_page(request: Request) -> HTMLResponse:
+def get_login_page(request: Request) -> Response:
     """Эндпоинт для получения страницы авторизации
 
     Args:
@@ -95,4 +100,7 @@ def get_login_page(request: Request) -> HTMLResponse:
     Returns:
         HTMLResponse: Страница авторизации
     """
+    access_token = request.cookies.get("access_token")
+    if access_token and decode_token(access_token):
+        return RedirectResponse(url="/", status_code=303)
     return settings.TEMPLATES.TemplateResponse(request=request, name="user_in.html")
