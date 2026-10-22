@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в аккаунт</title>
+    <link rel="icon" href="/static/favicon.png">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="registration-container">
+        <!-- Изменен action на /Auth/UserIn (или ваш эндпоинт авторизации) -->
+        <form class="registration-form" action="/Auth/UserIn" method="POST" enctype="application/x-www-form-urlencoded">
+            <h2>Вход в аккаунт</h2>
+            <p class="form-subtitle">Рады видеть вас снова!</p>
+            
+            <!-- Поле: Почта -->
+            <div class="input-group">
+                <label for="email">Электронная почта</label>
+                <input type="email" id="email" name="email" placeholder="example@mail.com" required autocomplete="email">
+            </div>
+            
+            <!-- Поле: Пароль -->
+            <div class="input-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" placeholder="Введите ваш пароль" required autocomplete="current-password">
+            </div>
+            
+            <!-- Кнопка отправки -->
+            <button type="submit" class="submit-btn">Войти</button>
+            
+            <!-- Подвал формы со ссылкой на регистрацию -->
+            <p class="form-footer">Ещё нет аккаунта? <a href="/Auth/UserUp">Зарегистрироваться</a></p>
+        </form>
+    </div>
+</body>
+</html>

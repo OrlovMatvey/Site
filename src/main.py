@@ -2,30 +2,37 @@
 from pathlib import Path
 
 import uvicorn
-from fastapi import Cookie, FastAPI
-from fastapi.responses import FileResponse
+from fastapi import Cookie, FastAPI, Request
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.auth import auth_router
+from src.recept_service import service_router
 
 app = FastAPI()
-BASE_DIR = Path(__file__).resolve().parent
+
+BASE_DIR = Path(__file__).absolute().parent
 
 app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
 app.include_router(auth_router)
+app.include_router(service_router)
 
 
 @app.get("/")
-def index(refresh_token: str = Cookie()) -> FileResponse:
-    """Точка входа
+def main(request: Request, refresh_token: str = Cookie(None)) -> RedirectResponse:
+    """Точка входа в приложение
+
+    Args:
+        request (Request): Тело запроса
+        refresh_token (str, optional): Refresh токен из куки
 
     Returns:
-        FileResponse: Файл главной страницы
+        RedirectResponse: Редирект на другую страницу
     """
     if refresh_token:
-        return FileResponse(BASE_DIR/"static/index.html")
+        return RedirectResponse(url="/Service/Main", status_code=303)
     else:
-        return FileResponse(BASE_DIR/"static/user_up.html")
+        return RedirectResponse(url="/Auth/UserUp", status_code=303)
 
 
 if __name__ == "__main__":

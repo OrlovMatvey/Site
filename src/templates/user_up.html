@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
+    <link rel="icon" href="/static/favicon.png">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="registration-container">
-        <form class="registration-form" action="http://127.0.0.1:8000/Auth/UserUp" method="POST" enctype="application/x-www-form-urlencoded">
+        <form class="registration-form" action="/Auth/UserUp" method="POST" enctype="application/x-www-form-urlencoded">
             <h2>Создание аккаунта</h2>
             <!-- Поле: Имя -->
             <div class="input-group">
@@ -27,7 +28,7 @@
             </div>
             <!-- Кнопка отправки -->
             <button type="submit" class="submit-btn">Зарегистрироваться</button>
-            <p class="form-footer">Уже есть аккаунт? <a href="#">Войти</a></p>
+            <p class="form-footer">Уже есть аккаунт? <a href="/Auth/UserIn">Войти</a></p>
         </form>
     </div>
 </body>

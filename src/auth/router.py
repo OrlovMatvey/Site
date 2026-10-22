@@ -1,8 +1,9 @@
 """Модуль эндпоинтов для сервиса Регистрации/Авторизации"""
-from fastapi import APIRouter, Depends, Response
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, Request, Response
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
+from src.config import settings
 from src.dependencies import get_db
 
 from .schemas import AuthenticateModel
@@ -21,22 +22,24 @@ def up_user(request: AuthenticateModel = Depends(AuthenticateModel.formBody), db
         db (Session, optional): Открытие сессии в БД. Defaults to Depends(get_db).
 
     Returns:
-        RedirectResponse: _description_
+        RedirectResponse: Редирект на главную страницу
     """
-    coockie_data = new_user(
+    coockie_data: dict = new_user(
         request.username, request.email, request.password, db
     )
     redirect_response = RedirectResponse(url="/", status_code=303)
     redirect_response.set_cookie(
         key="access_token",
         value=coockie_data["access_token"],
-        domain="http://127.0.0.1:8000",
+        domain="127.0.0.1",
+        httponly=True,
         max_age=coockie_data["access_expires_in"]
     )
     redirect_response.set_cookie(
         key="refresh_token",
         value=coockie_data["refresh_token"],
-        domain="http://127.0.0.1:8000",
+        domain="127.0.0.1",
+        httponly=True,
         max_age=coockie_data["refresh_expires_in"]
     )
     return redirect_response
@@ -67,3 +70,29 @@ def in_user(request: AuthenticateModel, response: Response, db: Session = Depend
         max_age=coockie_data["refresh_expires_in"]
     )
     return redirect_response
+
+
+@router.get("/UserUp")
+def registr_page(request: Request) -> HTMLResponse:
+    """Эндпоинт для получения страницы регистрации
+
+    Args:
+        request (Request): Тело запроса
+
+    Returns:
+        HTMLResponse: Страница регистрации
+    """
+    return settings.TEMPLATES.TemplateResponse(request=request, name="user_up.html")
+
+
+@router.get("/UserIn")
+def login_page(request: Request) -> HTMLResponse:
+    """Эндпоинт для получения страницы авторизации
+
+    Args:
+        request (Request): Тело запроса
+
+    Returns:
+        HTMLResponse: Страница авторизации
+    """
+    return settings.TEMPLATES.TemplateResponse(request=request, name="user_in.html")
