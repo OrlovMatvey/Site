@@ -19,3 +19,10 @@ def profile_page(request: Request, authenticated: bool = Depends(is_authenticate
     return settings.TEMPLATES.TemplateResponse(
         request=request, name="profile.html"
     )
+
+
+@router.get("/Admin")
+def admin_pagedef(request: Request, authenticated: bool = Depends(is_authenticated)) -> HTMLResponse:
+    return settings.TEMPLATES.TemplateResponse(
+        request=request, name="admin.html"
+    )

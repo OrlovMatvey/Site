@@ -2,7 +2,7 @@
 from datetime import UTC, datetime
 
 from fastapi import HTTPException
-from sqlalchemy import exists, select
+from sqlalchemy import exists, select, func
 
 from src.config import settings
 from src.security import (
@@ -28,7 +28,7 @@ def create_new_user(username: str, email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    if (db.scalar(select(exists().where(UserData.email == email)))):
+    if db.scalar(select(func.count()).select_from(UserData).where(UserData.email == email))>0:
         raise HTTPException(status_code=409, detail="Данный email уже занят.")
     else:
         hashed_password = hash_password(password)
@@ -63,7 +63,7 @@ def authenticate_user(email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    if (db.scalar(select(exists().where(UserData.email == email)))):
+    if db.scalar(select(func.count()).select_from(UserData).where(UserData.email == email))>0:
         user_object = db.scalars(
             select(UserData).where(UserData.email == email)
         ).one()
@@ -92,7 +92,7 @@ def join_user_token(refresh_token: str, db):
         db (_type_): Объект сессии БД
     """
     data = decode_token(refresh_token)
-    if db.scalar(select(exists().where(UserTokenData.user_id == data["sub"]))):
+    if db.scalar(select(func.count()).select_from(UserTokenData).where(UserTokenData.user_id == data["sub"]))>0:
         usertoken_object = db.scalars(
             select(UserTokenData).where(UserTokenData.id == data["sub"])
         ).one()

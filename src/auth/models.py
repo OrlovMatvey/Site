@@ -23,7 +23,7 @@ class UserTokenData(Base):
     __tablename__ = "UserTokens"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    token: Mapped[str] = mapped_column(String(50))
+    token: Mapped[str] = mapped_column(String(200))
     created_at: Mapped[date] = mapped_column()
     expired_at: Mapped[date] = mapped_column()
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))

@@ -3,7 +3,7 @@ SECRET_KEY=EInoAJ3uquBciyfYq3miigQKMQrKhYIRHi1oIzW92Vy4KVEsEOJiSIguOajEv3Qz
 ALGORITHM=HS256 
 ACCESS_TOKEN_EXPIRE_MINUTES=30 
 REFRESH_TOKEN_EXPIRE_DAYS=7
-DB_URL="mssql+pyodbc://@localhost/<DATABASE_NAME>?driver=ODBC+Driver+17+for+S+Servertrusted_connection=yestrust_server_certificate=yes"
+DB_URL="mssql+pyodbc://@localhost/database?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
 Структура пояснительной записки:
 1. Титульный лист
 2. Задание на курсовой проект
