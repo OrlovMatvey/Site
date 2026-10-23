@@ -4,22 +4,21 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from src.config import settings
-from src.dependencies import get_db, is_authenticated
+from src.dependencies import get_db
 from src.security import decode_token
 
-from .schemas import AuthenticateModel
+from .schemas import LoginModel, RegisterModel
 from .service import authenticate_user, create_new_user
 
 router = APIRouter(prefix="/Auth", tags=['AccessControl'])
 
 
 @router.post("/SignUp")
-def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody),
+def register(request: RegisterModel = Depends(RegisterModel.formBody),
              db: Session = Depends(get_db)) -> RedirectResponse:
     """Эндпоинт для регистрации пользователя
 
     Args:
-        response (Response): Тело ответа
         request (AuthenticateModel, optional): Тело запроса. Валидация Depends(AuthenticateModel.formBody).
         db (Session, optional): Открытие сессии в БД. Defaults to Depends(get_db).
 
@@ -46,14 +45,12 @@ def register(request: AuthenticateModel = Depends(AuthenticateModel.formBody),
 
 
 @router.post("/SignIn")
-def login(request: AuthenticateModel, 
-          response: Response, 
+def login(request: LoginModel = Depends(LoginModel.formBody), 
           db: Session = Depends(get_db)) -> RedirectResponse:
     """Эндпоинт для авторизации пользователя
 
     Args:
         request (AuthenticateModel): Тело запроса
-        response (Response): Тело ответа
         db (Session, optional): Открытие сессии в БД. Defaults to Depends(get_db).
 
     Returns:
@@ -82,7 +79,7 @@ def get_register_page(request: Request) -> Response:
         request (Request): Тело запроса
 
     Returns:
-        HTMLResponse: Страница регистрации
+        Response: Страница регистрации или редирект на главную страницу
     """
     access_token = request.cookies.get("access_token")
     if access_token and decode_token(access_token):
@@ -98,7 +95,7 @@ def get_login_page(request: Request) -> Response:
         request (Request): Тело запроса
 
     Returns:
-        HTMLResponse: Страница авторизации
+        Response: Страница авторизации или редирект на главную страницу
     """
     access_token = request.cookies.get("access_token")
     if access_token and decode_token(access_token):

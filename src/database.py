@@ -10,7 +10,7 @@ engine = create_engine(settings.DB_URL, echo=True)
 class Base(DeclarativeBase):
     """Базовый класс для моделей"""
     @classmethod
-    def fields(cls) -> list:
+    def get_table_fields(cls) -> list:
         """Вывод полей для модели
 
         Returns:

@@ -1,6 +1,7 @@
 """Модуль бизнес-логики для сервиса Регистрации/Авторизации"""
 from datetime import UTC, datetime
 
+from fastapi import HTTPException
 from sqlalchemy import exists, select
 
 from src.config import settings
@@ -28,7 +29,7 @@ def create_new_user(username: str, email: str, password: str, db) -> dict:
         dict: Словарь с данными для coockie
     """
     if (db.scalar(select(exists().where(UserData.email == email)))):
-        pass
+        raise HTTPException(status_code=409, detail="Данный email уже занят.")
     else:
         hashed_password = hash_password(password)
         user_object = UserData(
@@ -78,9 +79,9 @@ def authenticate_user(email: str, password: str, db) -> dict:
                 "token_type": "bearer"
             }
         else:
-            pass
+            raise HTTPException(status_code=400, detail="Неверный логин или пароль.")
     else:
-        pass
+        raise HTTPException(status_code=400, detail="Неверный логин или пароль.")
 
 
 def join_user_token(refresh_token: str, db):
