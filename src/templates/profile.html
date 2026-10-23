@@ -21,10 +21,8 @@
         </div>
     </nav>
 
-    <!-- Основной контент страницы -->
     <main class="content-container">
         
-        <!-- Блок профиля автора -->
         <section class="profile-block">
             <div class="profile-avatar">U</div>
             <div class="profile-details">
@@ -39,15 +37,14 @@
             <a href="#" class="btn-small">+ Новый рецепт</a>
         </div>
 
-        <!-- Сетка с карточками пользователя -->
         <div class="recipes-grid">
+            {% for recipe in recipes %}
             
-            <!-- Карточка пользователя 1 -->
             <article class="recipe-card">
-                <img src="" alt="Пицца" class="recipe-image">
+                <img src="{{recipe.image_url}}" alt="Пицца" class="recipe-image">
                 <div class="recipe-info">
-                    <h3 class="recipe-title">Домашняя пицца Маргарита</h3>
-                    <p class="recipe-description">Классический итальянский рецепт с хрустящей корочкой, сочными томатами и нежной моцареллой.</p>
+                    <h3 class="recipe-title">{{recipe.title}}</h3>
+                    <p class="recipe-description">{{recipe.description}}.</p>
                     <div class="recipe-meta">
                         <span>⏱️ 30 мин</span>
                         <span>✍️ Редактировать</span>
@@ -55,6 +52,7 @@
                 </div>
             </article>
 
+             {% endfor %}
         </div>
     </main>
 

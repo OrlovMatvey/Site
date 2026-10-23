@@ -20,3 +20,15 @@ DB_URL="mssql+pyodbc://@localhost/database?driver=ODBC+Driver+18+for+SQL+Server&
     4.3 Техническое задание, 4.4 Руководство программиста 4.5 Руководство оператора,
     4.6 Пользовательские экраны, 4.7 Паспорт программы, 4.8 Текст программы.
     )
+
+[ Таблица Рецептов (Recipe) ]
+ - id
+ - title ("Борщ")
+ 
+        │  1
+        ▼  to Many
+[ Состав рецепта (RecipeIngredient) ]
+ - recipe_id (FK)
+ - ingredient_id (FK) ───► [ Справочник (Ingredient) ]
+ - amount (300)             - id
+ - unit ("г")               - name ("Картофель")

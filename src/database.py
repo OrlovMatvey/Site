@@ -17,3 +17,11 @@ class Base(DeclarativeBase):
             list: Список полей модели
         """
         return [a.name for a in cls.__table__.columns]
+
+    def get_dict(self) -> dict:
+        """Преобразование экземпляра класса в словарь
+
+        Returns:
+            dict: Словарь с данными объекта
+        """
+        return {field.name: getattr(self, field.name) for field in self.__table__.columns}
