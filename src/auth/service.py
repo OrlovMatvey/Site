@@ -2,7 +2,7 @@
 from datetime import UTC, datetime
 
 from fastapi import HTTPException
-from sqlalchemy import exists, select, func
+from sqlalchemy import select
 
 from src.config import settings
 from src.security import (
@@ -28,7 +28,7 @@ def create_new_user(username: str, email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    if db.scalar_one_or_none(select(UserData).where(UserData.email == email)):
+    if db.scalars(select(UserData).where(UserData.email == email)).one_or_none():
         raise HTTPException(status_code=409, detail="Данный email уже занят.")
     else:
         hashed_password = hash_password(password)
@@ -63,19 +63,19 @@ def authenticate_user(email: str, password: str, db) -> dict:
     Returns:
         dict: Словарь с данными для coockie
     """
-    if db.scalar_one_or_none(select(UserData).where(UserData.email == email)):
+    if db.scalars(select(UserData).where(UserData.email == email)).one_or_none():
         user_object = db.scalars(
             select(UserData).where(UserData.email == email)
         ).one()
-        if verify_password(password, user_object.password):
+        if verify_password(password, user_object.hash_password):
             access_token = create_access_token({"sub": str(user_object.id)})
             refresh_token = create_refresh_token({"sub": str(user_object.id)})
             join_user_token(refresh_token, db)
             return {
                 "access_token": access_token,
                 "refresh_token": refresh_token,
-                "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*SECONDS_IN_MINUTE,
-                "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*SECONDS_IN_DAY,
+                "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*settings.SECONDS_IN_MINUTE,
+                "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*settings.SECONDS_IN_DAY,
                 "token_type": "bearer"
             }
         else:
@@ -92,7 +92,7 @@ def join_user_token(refresh_token: str, db):
         db (_type_): Объект сессии БД
     """
     data = decode_token(refresh_token)
-    if db.scalar_one_or_none(select(UserTokenData).where(UserTokenData.user_id == data["sub"])):
+    if db.scalars(select(UserTokenData).where(UserTokenData.user_id == data["sub"])).one_or_none():
         usertoken_object = db.scalar(
             select(UserTokenData).where(UserTokenData.user_id == data["sub"])
         )

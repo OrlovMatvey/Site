@@ -6,6 +6,7 @@
     <title>Мой профиль — Поварской Клуб</title>
     <link rel="icon" href="/static/favicon.png">
     <link rel="stylesheet" href="/static/style.css">
+    <script defer src="/static/profile.js"></script>
 </head>
 <body class="main-layout">
 
@@ -24,27 +25,31 @@
     <main class="content-container">
         
         <section class="profile-block">
-            <div class="profile-avatar">U</div>
+            <div class="profile-avatar">{{user_data[0].username[0]}}</div>
             <div class="profile-details">
-                <h2>{{ user.username }}</h2>
-                <p>Электронная почта: {{ user.email }}</p>
-                <p>Добавлено рецептов: {{ count_recepts }}</p>
+                <h2>{{ user_data[0].username }}</h2>
+                <p>Электронная почта: {{ user_data[0].email }}</p>
+                {% if recepts_data.title is defined %}
+                    <p>Добавлено рецептов: {{ recepts_data|length }}</p>
+                {% else %}
+                    <p>Добавлено рецептов: {{ recepts_data[0] }}</p>
+                {% endif %}
             </div>
         </section>
 
         <div class="page-header">
             <h1>Мои фирменные рецепты</h1>
-            <a href="#" class="btn-small">+ Новый рецепт</a>
+            <a href="#" id="openModalBtn" class="btn-small">+ Новый рецепт</a>
         </div>
 
         <div class="recipes-grid">
-            {% for recipe in recipes %}
+            {% for recipe in recipts_data %}
             
             <article class="recipe-card">
-                <img src="{{recipe.image_url}}" alt="Пицца" class="recipe-image">
+                <img src={{recipe.image}} alt="Пицца" class="recipe-image">
                 <div class="recipe-info">
-                    <h3 class="recipe-title">{{recipe.title}}</h3>
-                    <p class="recipe-description">{{recipe.description}}.</p>
+                    <h3 class="recipe-title">{{ recipe.title }}</h3>
+                    <p class="recipe-description">{{ recipe.body }}.</p>
                     <div class="recipe-meta">
                         <span>⏱️ 30 мин</span>
                         <span>✍️ Редактировать</span>
@@ -55,6 +60,79 @@
              {% endfor %}
         </div>
     </main>
+    <!-- Модальное окно для добавления рецепта -->
+    <dialog id="recipeModal" class="modal-dialog">
+        <div class="modal-header">
+            <h2>Добавить новый рецепт</h2>
+            <button id="closeModalBtn" class="btn-close">&times;</button>
+        </div>
+        <form action="/Service/Profile" method="POST" enctype="multipart/form-data" class="modal-form">
+            <!-- Название -->
+            <div class="form-group">
+                <label for="recipeTitle">Название рецепта:</label>
+                <input type="text" id="recipeTitle" name="title" required placeholder="Например: Маргарита">
+            </div>
+            
+            <!-- Категория (Новое поле) -->
+            <div class="form-group">
+                <label for="recipeCategory">Категория рецепта:</label>
+                <select id="recipeCategory" name="category" required>
+                    <option value="" disabled selected>-- Выберите категорию --</option>
+                    {% for category in categories_data %}
+                        <!-- Если category это объект из БД, пишите {{ category.id }} и {{ category.name }} -->
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Описание -->
+            <div class="form-group">
+                <label for="recipeBody">Описание / Рецепт:</label>
+                <textarea id="recipeBody" name="body" rows="5" required placeholder="Шаги приготовления..."></textarea>
+            </div>
 
+            <!-- Выбор ингредиентов -->
+            <div class="form-group">
+                <label for="ingredientSelector">Выберите ингредиенты для рецепта:</label>
+                <div style="display: flex; gap: 10px;">
+                    <select id="ingredientSelector">
+                        <option value="" disabled selected>-- Выберите ингредиент --</option>
+                        {% for ingredient in ingredients_data %}
+                            <option value="{{ ingredient }}" data-name="{{ ingredient }}">{{ ingredient }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" id="addIngredientBtn" class="btn-small" style="white-space: nowrap;">+ Добавить</button>
+                </div>
+            </div>
+
+            <!-- Контейнер для выбранных ингредиентов -->
+            <div class="form-group">
+                <label>Выбранные ингредиенты:</label>
+                <div id="ingredientsContainer" class="ingredients-list-container">
+                    <!-- Сюда JavaScript вставляет строки -->
+                </div>
+            </div>
+            
+            <!-- Изображение (Переделано с текстовой ссылки на файл) -->
+            <div class="form-group">
+                <label>Фотография блюда:</label>
+                <div class="file-upload-wrapper">
+                    <!-- Скрытый системный инпут -->
+                    <input type="file" id="recipeImage" name="image" accept="image/*" required class="file-upload-input">
+                    
+                    <!-- Красивая кнопка-заменитель -->
+                    <label for="recipeImage" class="file-upload-label">
+                        <span class="upload-icon">📸</span>
+                        <span class="upload-text" id="uploadText">Выбрать файл изображения</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="modal-actions">
+                <button type="submit" class="btn-small">Сохранить</button>
+            </div>
+        </form>
+    </dialog>
 </body>
 </html>

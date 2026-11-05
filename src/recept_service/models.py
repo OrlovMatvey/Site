@@ -1,21 +1,20 @@
-from sqlalchemy import JSON, ForeignKey, LargeBinary, String
+from sqlalchemy import JSON, Float, ForeignKey, LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.database import Base
 
 
-class ReceptData(Base):
+class RecipeData(Base):
     """Модель для таблицы с рецептами"""
-    __tablename__ = "ReceptData"
+    __tablename__ = "RecipeData"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50))
-    image: Mapped[bytes] = mapped_column(LargeBinary)
-    body: Mapped[dict] = mapped_column(JSON, default=dict)
-    user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
     category: Mapped[int] = mapped_column(ForeignKey('CategoryData.id'))
-    count_likes: Mapped[int] = mapped_column()
-    count_dislikes: Mapped[int] = mapped_column()
+    body: Mapped[dict] = mapped_column(JSON, default=dict)
+    image: Mapped[bytes] = mapped_column(LargeBinary)
+    count_likes: Mapped[int] = mapped_column(nullable=True)
+    count_dislikes: Mapped[int] = mapped_column(nullable=True)
 
 
 class CommentData(Base):
@@ -25,16 +24,16 @@ class CommentData(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     body: Mapped[str] = mapped_column(String(1000))
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
-    recept_id: Mapped[int] = mapped_column(ForeignKey('ReceptData.id'))
+    recipe_id: Mapped[int] = mapped_column(ForeignKey('RecipeData.id'))
 
 
-class FavoriteReceptData(Base):
+class FavoriteRecipeData(Base):
     """Модель для таблицы с избранными рецептами"""
-    __tablename__ = "FavoriteReceptData"
+    __tablename__ = "FavoriteRecipeData"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
-    recept_id: Mapped[int] = mapped_column(ForeignKey('ReceptData.id'))
+    recipe_id: Mapped[int] = mapped_column(ForeignKey('RecipeData.id'))
 
 
 class IngredientData(Base):
@@ -51,3 +50,13 @@ class CategoryData(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[int] = mapped_column(String(50))
+
+
+class RecipeIngredientData(Base):
+    __tablename__ = "RecipeIngredientData"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    recipe_id: Mapped[int] = mapped_column(ForeignKey('RecipeData.id'))
+    ingredient_id: Mapped[int] = mapped_column(ForeignKey('IngredientData.id'))
+    volume: Mapped[float] = mapped_column(Float)
+    unit: Mapped[str] = mapped_column(String(20))

@@ -4,9 +4,9 @@ from src.database import Base, engine
 from src.recept_service import (
     CategoryData,
     CommentData,
-    FavoriteReceptData,
+    FavoriteRecipeData,
     IngredientData,
-    ReceptData,
+    RecipeData,
 )
 
 

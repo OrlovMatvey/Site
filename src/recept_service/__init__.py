@@ -1,17 +1,17 @@
 from .models import (
     CategoryData,
     CommentData,
-    FavoriteReceptData,
+    FavoriteRecipeData,
     IngredientData,
-    ReceptData,
+    RecipeData,
 )
 from .router import router as service_router
 
 __all__ = [
     "CategoryData",
     "CommentData",
-    "FavoriteReceptData",
+    "FavoriteRecipeData",
     "IngredientData",
-    "ReceptData",
+    "RecipeData",
     "service_router",
 ]

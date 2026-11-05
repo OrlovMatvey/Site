@@ -28,19 +28,16 @@ def get_db() -> Iterator[Session]:
 def is_authenticated(request: Request, response: Response, db: Session = Depends(get_db)) -> bool:
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
-
     if access_token and decode_token(access_token):
         return True
     if refresh_token:
         data = decode_token(refresh_token)
         if data:
             user_id = data["sub"]
-            db_token = db.scalar(select(exists().where(
-                UserTokenData.user_id == user_id, UserTokenData.token == refresh_token
-            )))
+            db_token = db.scalars(select(UserTokenData).where(UserTokenData.user_id == data["sub"], UserTokenData.token == refresh_token)).one_or_none()
             if db_token:
                 new_access_token = create_access_token({"sub": user_id})
                 request.state.new_access_token = new_access_token
-                return True
+                return new_access_token
 
     raise HTTPException(status_code=401, detail="Пользователь не авторизован")
