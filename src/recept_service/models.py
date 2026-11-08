@@ -1,3 +1,4 @@
+"""Модуль ORM-моделей БД для сервиса Рецептов"""
 from sqlalchemy import JSON, Float, ForeignKey, LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -54,6 +55,7 @@ class CategoryData(Base):
 
 
 class RecipeIngredientData(Base):
+    """Модель для таблицы с ингредиентами рецептов"""
     __tablename__ = "RecipeIngredientData"
 
     id: Mapped[int] = mapped_column(primary_key=True)

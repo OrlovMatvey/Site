@@ -1,3 +1,4 @@
+"""Модуль Pydantic схем для сервиса Рецептов"""
 from typing import Self
 
 from fastapi import File, Form, UploadFile
@@ -5,6 +6,14 @@ from pydantic import BaseModel
 
 
 class RecipeModel(BaseModel):
+    """Pydantic-модель для валидации запроса на создание нового рецепта
+
+    Args:
+        BaseModel (_type_): Базовый класс для Pydantic-моделей
+
+    Returns:
+        _type_: Экземпляр модели
+    """
     title: str
     category: int
     body: str

@@ -2,7 +2,7 @@
 from pathlib import Path
 
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -17,7 +17,16 @@ BASE_DIR = Path(__file__).absolute().parent
 
 
 @app.middleware("http")
-async def auto_set_refresh_cookies(request: Request, call_next):
+async def auto_set_refresh_cookies(request: Request, call_next) -> Response:
+    """Мидлвар для добавления access_token в ответ
+
+    Args:
+        request (Request): Тело запроса.
+        call_next (_type_): Функция для управления цепочкой событий.
+
+    Returns:
+        Response: Тело ответа с access_token внутри.
+    """
     response = await call_next(request)
     new_access_token = getattr(request.state, "new_access_token", None)
     if new_access_token:

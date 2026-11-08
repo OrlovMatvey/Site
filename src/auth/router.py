@@ -14,13 +14,15 @@ router = APIRouter(prefix="/Auth", tags=['AccessControl'])
 
 
 @router.post("/SignUp")
-def register(request: RegisterModel = Depends(RegisterModel.formBody),
-             db: Session = Depends(get_db)) -> RedirectResponse:
+def register(
+    request: RegisterModel = Depends(RegisterModel.formBody),
+    db: Session = Depends(get_db)
+) -> RedirectResponse:
     """Эндпоинт для регистрации пользователя
 
     Args:
         request (AuthenticateModel, optional): Тело запроса. Валидация Depends(AuthenticateModel.formBody).
-        db (Session, optional): Открытие сессии в БД. Defaults to Depends(get_db).
+        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
 
     Returns:
         RedirectResponse: Редирект на главную страницу
@@ -45,16 +47,18 @@ def register(request: RegisterModel = Depends(RegisterModel.formBody),
 
 
 @router.post("/SignIn")
-def login(request: LoginModel = Depends(LoginModel.formBody), 
-          db: Session = Depends(get_db)) -> RedirectResponse:
+def login(
+    request: LoginModel = Depends(LoginModel.formBody), 
+    db: Session = Depends(get_db)
+) -> RedirectResponse:
     """Эндпоинт для авторизации пользователя
 
     Args:
-        request (AuthenticateModel): Тело запроса
-        db (Session, optional): Открытие сессии в БД. Defaults to Depends(get_db).
+        request (AuthenticateModel): Тело запроса.
+        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
 
     Returns:
-        RedirectResponse: Редирект на главную страницу
+        RedirectResponse: Редирект на главную страницу.
     """
     coockie_data = authenticate_user(request.email, request.password, db)
     redirect_response = RedirectResponse(url="/", status_code=303)
@@ -76,10 +80,10 @@ def get_register_page(request: Request) -> Response:
     """Эндпоинт для получения страницы регистрации
 
     Args:
-        request (Request): Тело запроса
+        request (Request): Тело запроса.
 
     Returns:
-        Response: Страница регистрации или редирект на главную страницу
+        Response: Страница регистрации или редирект на главную страницу.
     """
     access_token = request.cookies.get("access_token")
     if access_token and decode_token(access_token):
@@ -92,10 +96,10 @@ def get_login_page(request: Request) -> Response:
     """Эндпоинт для получения страницы авторизации
 
     Args:
-        request (Request): Тело запроса
+        request (Request): Тело запроса.
 
     Returns:
-        Response: Страница авторизации или редирект на главную страницу
+        Response: Страница авторизации или редирект на главную страницу.
     """
     access_token = request.cookies.get("access_token")
     if access_token and decode_token(access_token):

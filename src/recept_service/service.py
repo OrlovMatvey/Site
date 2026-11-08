@@ -1,7 +1,9 @@
+"""Модуль бизнес-логики для сервиса Рецептов"""
+import base64
+
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
-import base64
 
 from src.auth import UserData
 from src.security import decode_token
@@ -9,12 +11,21 @@ from src.security import decode_token
 from .models import CategoryData, IngredientData, RecipeData, RecipeIngredientData
 
 
-def get_profile_from_db(access_token: str, db: Session):
+def get_profile_from_db(access_token: str, db: Session) -> dict[str, list]:
+    """Получение информации из БД для шаблона профиля
+
+    Args:
+        access_token (str): Access_token.
+        db (Session): Объект сессии БД.
+
+    Returns:
+        dict[str, list]: Словарь с контекстом для шаблона.
+    """
+    context: dict[str, list] = {}
     user_data: dict[str, str] = {}
     recipes_data: list[dict] = []
     categories_data: list[dict] = []
     ingredients_data: list[dict] = []
-    context: dict[list] = {}
     token_data = decode_token(access_token)
     user_data = db.scalar(select(UserData).where(UserData.id == token_data["sub"]))
     user_data = user_data.get_dict()
@@ -35,15 +46,33 @@ def get_profile_from_db(access_token: str, db: Session):
     context["user_data"] = [user_data]
     context["recipes_data"] = recipes_data
     context["ingredients_data"] = ingredients_data
-    print(ingredients_data)
     return context
 
 
 def add_new_recipe(
-        access_token: str, title: str, category: int, body: str,
-        ingredient_ids: list[int], ingredient_volumes: list[float],
-        ingredient_units: list[str], image: bytes, db: Session
-        ):
+    access_token: str, title: str, category: int, body: str,
+    ingredient_ids: list[int], ingredient_volumes: list[float],
+    ingredient_units: list[str], image: bytes, db: Session
+) -> RecipeData:
+    """Добавление записи о новом рецепте и его ингредиентах в БД
+
+    Args:
+        access_token (str): Access_token.
+        title (str): Заголовок рецепта.
+        category (int): Категория рецепта.
+        body (str): Основной текст рецепта.
+        ingredient_ids (list[int]): ID всех ингредиентов.
+        ingredient_volumes (list[float]): Значения всех ингредиентов.
+        ingredient_units (list[str]): Величины всех ингредиентов.
+        image (bytes): Изображение рецепта.
+        db (Session): Объект сессии БД.
+
+    Raises:
+        HTTPException: Ошибка при создании рецепта
+
+    Returns:
+        RecipeData: Объект записи рецепта
+    """
     token_data = decode_token(access_token)
     user_id = token_data["sub"]
     try:
@@ -67,13 +96,22 @@ def add_new_recipe(
             db.add(recipe_ingredient_object)
         db.commit()
         return recipe_object
+    # Нужно переделать обработку исключения
     except Exception:
         db.rollback()
         raise HTTPException(status_code=500, detail="Ошибка при создании рецепта")
 
 
-def get_recipes_from_db(db: Session):
-    context: dict[list] = {}
+def get_recipes_from_db(db: Session) -> dict[str, list]:
+    """Получение информации из БД для шаблона главной страницы
+
+    Args:
+        db (Session): Объект сессии БД.
+
+    Returns:
+        dict[str, list]: Словарь с контекстом для шаблона.
+    """
+    context: dict[str, list] = {}
     recipes_data: list[dict] = []
     recipes = db.scalars(select(RecipeData)).all()
     for recipe in recipes:

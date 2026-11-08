@@ -1,8 +1,8 @@
 """Модуль за зависимостей FastAPI"""
 from collections.abc import Iterator
 
-from fastapi import Depends, HTTPException, Request, Response
-from sqlalchemy import exists, select
+from fastapi import Depends, HTTPException, Request
+from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
 from src.auth import UserTokenData
@@ -13,7 +13,7 @@ session = sessionmaker(engine)
 
 
 def get_db() -> Iterator[Session]:
-    """Создание сессии БД
+    """Зависимость для создания сессии БД
 
     Yields:
         Iterator[Session]: Объект сессии БД
@@ -25,7 +25,19 @@ def get_db() -> Iterator[Session]:
         db.close()
 
 
-def is_authenticated(request: Request, response: Response, db: Session = Depends(get_db)) -> bool:
+def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
+    """Зависимость для проверки наличия токенов
+
+    Args:
+        request (Request): Тело запроса.
+        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: Пользователь не авторизован
+
+    Returns:
+        str: Access_token(Новый или из cookie)
+    """
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
     if access_token and decode_token(access_token):

@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 
 from fastapi import HTTPException
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from src.config import settings
 from src.security import (
@@ -16,19 +17,19 @@ from src.security import (
 from .models import UserData, UserTokenData
 
 
-def create_new_user(username: str, email: str, password: str, db) -> dict:
+def create_new_user(username: str, email: str, password: str, db: Session) -> dict[str, str | int]:
     """Создание нового пользователя
 
     Args:
-        username (str): Имя юзера
-        email (str): Почта юзера
-        password (str): Пароль юзера
-        db (_type_): Объект сессии БД
+        username (str): Имя юзера.
+        email (str): Почта юзера.
+        password (str): Пароль юзера.
+        db (_type_): Объект сессии БД.
 
     Returns:
-        dict: Словарь с данными для coockie
+        dict[str, str | int]: Словарь с данными для coockie.
     """
-    if db.scalars(select(UserData).where(UserData.email == email)).one_or_none():
+    if db.scalar(select(UserData).where(UserData.email == email)):
         raise HTTPException(status_code=409, detail="Данный email уже занят.")
     else:
         hashed_password = hash_password(password)
@@ -38,7 +39,7 @@ def create_new_user(username: str, email: str, password: str, db) -> dict:
             hash_password=hashed_password
         )
         db.add(user_object)
-        db.commit()
+        db.flush()
         access_token = create_access_token({"sub": str(user_object.id)})
         refresh_token = create_refresh_token({"sub": str(user_object.id)})
         join_user_token(refresh_token, db)
@@ -51,19 +52,19 @@ def create_new_user(username: str, email: str, password: str, db) -> dict:
         }
 
 
-def authenticate_user(email: str, password: str, db) -> dict:
+def authenticate_user(email: str, password: str, db: Session) -> dict[str, str | int]:
     """Авторизация старого пользователя
 
     Args:
-        username (str): Имя юзера
-        email (str): Почта юзера
-        password (str): Пароль юзера
-        db (_type_): Объект сессии БД
+        username (str): Имя юзера.
+        email (str): Почта юзера.
+        password (str): Пароль юзера.
+        db (_type_): Объект сессии БД.
 
     Returns:
-        dict: Словарь с данными для coockie
+        dict[str, str | int]: Словарь с данными для coockie.
     """
-    if db.scalars(select(UserData).where(UserData.email == email)).one_or_none():
+    if db.scalar(select(UserData).where(UserData.email == email)):
         user_object = db.scalars(
             select(UserData).where(UserData.email == email)
         ).one()
@@ -84,15 +85,15 @@ def authenticate_user(email: str, password: str, db) -> dict:
         raise HTTPException(status_code=400, detail="Неверный логин или пароль.")
 
 
-def join_user_token(refresh_token: str, db):
+def join_user_token(refresh_token: str, db: Session) -> None:
     """Привязка токена к пользователю
 
     Args:
-        refresh_token (str): refresh токен
-        db (_type_): Объект сессии БД
+        refresh_token (str): refresh токен.
+        db (_type_): Объект сессии БД.
     """
     data = decode_token(refresh_token)
-    if db.scalars(select(UserTokenData).where(UserTokenData.user_id == data["sub"])).one_or_none():
+    if db.scalar(select(UserTokenData).where(UserTokenData.user_id == data["sub"])):
         usertoken_object = db.scalar(
             select(UserTokenData).where(UserTokenData.user_id == data["sub"])
         )

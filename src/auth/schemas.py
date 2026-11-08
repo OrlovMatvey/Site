@@ -9,7 +9,7 @@ class RegisterModel(BaseModel):
     """Pydantic-модель для валидации запроса на регистрацию
 
     Args:
-        BaseModel (_type_): Базовый класс для моделей
+        BaseModel (_type_): Базовый класс для Pydantic-моделей
 
     Returns:
         _type_: Экземпляр модели
@@ -27,7 +27,7 @@ class LoginModel(BaseModel):
     """Pydantic-модель для валидации запроса на авторизацию
 
     Args:
-        BaseModel (_type_): Базовый класс для моделей
+        BaseModel (_type_): Базовый класс для Pydantic-моделей
 
     Returns:
         _type_: Экземпляр модели
