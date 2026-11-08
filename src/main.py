@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from src.auth import auth_router
 from src.config import settings
 from src.dependencies import is_authenticated
-from src.recept_service import service_router
+from src.recipe_service import service_router
 
 app = FastAPI()
 
@@ -51,6 +51,7 @@ async def auth_exception_handler(request: Request, exc: HTTPException) -> Redire
         RedirectResponse: Редирект на страницу регистрации
     """
     return RedirectResponse(url="/Auth/SignUp", status_code=303)
+# Нужно добавить хендлеры для остальных исключений и задействовать шаблон для ошибок
 
 app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
 app.include_router(auth_router)

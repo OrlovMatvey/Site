@@ -1,7 +1,7 @@
 """Модуль создания таблиц в БД"""
 from src.auth import UserData, UserTokenData
 from src.database import Base, engine
-from src.recept_service import (
+from src.recipe_service import (
     CategoryData,
     CommentData,
     FavoriteRecipeData,

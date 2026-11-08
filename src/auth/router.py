@@ -1,5 +1,5 @@
 """Модуль эндпоинтов для сервиса Регистрации/Авторизации"""
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Cookie, Depends, Request, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
@@ -8,7 +8,7 @@ from src.dependencies import get_db
 from src.security import decode_token
 
 from .schemas import LoginModel, RegisterModel
-from .service import authenticate_user, create_new_user
+from .service import authenticate_user, create_new_user, delete_refresh_token
 
 router = APIRouter(prefix="/Auth", tags=['AccessControl'])
 
@@ -105,3 +105,12 @@ def get_login_page(request: Request) -> Response:
     if access_token and decode_token(access_token):
         return RedirectResponse(url="/", status_code=303)
     return settings.TEMPLATES.TemplateResponse(request=request, name="user_in.html")
+
+
+@router.get("/Logout")
+def logout(refresh_token: str = Cookie(None), db: Session = Depends(get_db)) -> RedirectResponse:
+    delete_refresh_token(refresh_token, db)
+    redirect_response = RedirectResponse(url="/", status_code=303)
+    redirect_response.delete_cookie("access_token", path="/")
+    redirect_response.delete_cookie("refresh_token", path="/")
+    return redirect_response

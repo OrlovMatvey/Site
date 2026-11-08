@@ -108,3 +108,10 @@ def join_user_token(refresh_token: str, db: Session) -> None:
             user_id=data["sub"])
         db.add(usertoken_object)
     db.commit()
+
+
+def delete_refresh_token(refresh_token: str, db: Session) -> None:
+    usertoken_object = db.scalar(select(UserTokenData).where(UserTokenData.token == refresh_token))
+    if usertoken_object:
+        db.delete(usertoken_object)
+        db.commit()
