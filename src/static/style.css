@@ -611,3 +611,82 @@ body.main-layout {
     outline: 2px solid #0056b3;
     background-color: #e9ecef;
 }
+
+/* Контейнер карточки ошибки */
+.error-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+}
+
+/* Огромный код ошибки (например, 404, 401, 500) */
+.error-code {
+    font-size: 72px;
+    font-weight: bold;
+    color: #e74c3c; /* Акцентный красный для кодов ошибок */
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+/* Заголовок ошибки */
+.error-container h2 {
+    color: #333333;
+    margin-bottom: 12px;
+    font-size: 24px;
+}
+
+/* Детальное описание ошибки от сервера */
+.error-message {
+    color: #666666;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #e74c3c;
+    text-align: left;
+    word-break: break-word;
+}
+
+/* Кнопка возврата */
+.action-btn {
+    display: block;
+    background-color: #4a90e2;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+/* Эффект при наведении на кнопку */
+.action-btn:hover {
+    background-color: #357abd;
+}
+
+/* Ссылка/футер внизу */
+.error-footer {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #888888;
+}
+
+.error-footer a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.error-footer a:hover {
+    text-decoration: underline;
+}

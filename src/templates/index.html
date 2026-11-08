@@ -31,17 +31,21 @@
         <!-- Сетка с карточками -->
         <div class="recipes-grid">
             
-            <!-- Карточка 1 -->
+            {% for recipe in recipes_data %}
+            
             <article class="recipe-card">
-                <img src="" alt="Пицца" class="recipe-image">
+                <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
                 <div class="recipe-info">
-                    <h3 class="recipe-title">Домашняя пицца Маргарита</h3>
-                    <p class="recipe-description">Классический итальянский рецепт с хрустящей корочкой, сочными томатами и нежной моцареллой.</p>
+                    <h3 class="recipe-title">{{ recipe.title }}</h3>
+                    <p class="recipe-description">{{ recipe.body }}.</p>
                     <div class="recipe-meta">
                         <span>⏱️ 30 мин</span>
+                        <span>✍️ Редактировать</span>
                     </div>
                 </div>
             </article>
+
+             {% endfor %}
 
         </div>
     </main>

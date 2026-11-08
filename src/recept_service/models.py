@@ -13,6 +13,7 @@ class RecipeData(Base):
     category: Mapped[int] = mapped_column(ForeignKey('CategoryData.id'))
     body: Mapped[dict] = mapped_column(JSON, default=dict)
     image: Mapped[bytes] = mapped_column(LargeBinary)
+    user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
     count_likes: Mapped[int] = mapped_column(nullable=True)
     count_dislikes: Mapped[int] = mapped_column(nullable=True)
 

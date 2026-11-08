@@ -25,12 +25,12 @@ addBtn.addEventListener('click', () => {
     // Конструируем HTML из скрытого ID, названия и двух новых полей
     // Используем квадратные скобки [] в именах (name="...[]"), чтобы FastAPI принял их как список
     row.innerHTML = `
-        <input type="hidden" name="ingredient_ids[]" value="${selectedValue}">
+        <input type="hidden" name="ingredient_ids" value="${selectedValue}">
         <span class="ingredient-name">${selectedName}</span>
         
-        <input type="number" name="ingredient_volumes[]" placeholder="Объем / Кол-во" required min="0" step="0.1">
+        <input type="number" name="ingredient_volumes" placeholder="Объем / Кол-во" required min="0" step="0.1">
         
-        <select name="ingredient_units[]" required>
+        <select name="ingredient_units" required>
             <option value="г">г</option>
             <option value="кг">кг</option>
             <option value="мл">мл</option>

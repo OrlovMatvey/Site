@@ -8,9 +8,9 @@ class RecipeModel(BaseModel):
     title: str
     category: int
     body: str
-    ingredient_name: list[str]
-    ingredient_volume: list[float]
-    ingredient_unit: list[str]
+    ingredient_ids: list[int]
+    ingredient_volumes: list[float]
+    ingredient_units: list[str]
     image: bytes
 
     @classmethod
@@ -19,9 +19,9 @@ class RecipeModel(BaseModel):
         title: str = Form(...),
         category: int = Form(...),
         body: str = Form(...),
-        ingredient_name: list[str] = Form(...),
-        ingredient_volume: list[float] = Form(...),
-        ingredient_unit: list[str] = Form(...),
+        ingredient_ids: list[int] = Form(...),
+        ingredient_volumes: list[float] = Form(...),
+        ingredient_units: list[str] = Form(...),
         image: UploadFile = File(...)
     ) -> Self:
         image_bytes = await image.read()
@@ -29,8 +29,8 @@ class RecipeModel(BaseModel):
             title=title,
             category=category,
             body=body,
-            ingredient_name=ingredient_name,
-            ingredient_volume=ingredient_volume,
-            ingredient_unit=ingredient_unit,
+            ingredient_ids=ingredient_ids,
+            ingredient_volumes=ingredient_volumes,
+            ingredient_units=ingredient_units,
             image=image_bytes
         )

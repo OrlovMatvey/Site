@@ -29,10 +29,10 @@
             <div class="profile-details">
                 <h2>{{ user_data[0].username }}</h2>
                 <p>Электронная почта: {{ user_data[0].email }}</p>
-                {% if recepts_data.title is defined %}
-                    <p>Добавлено рецептов: {{ recepts_data|length }}</p>
+                {% if recipes_data[0].title is defined %}
+                    <p>Добавлено рецептов: {{ recipes_data|length }}</p>
                 {% else %}
-                    <p>Добавлено рецептов: {{ recepts_data[0] }}</p>
+                    <p>Добавлено рецептов: {{ recipes_data[0] }}</p>
                 {% endif %}
             </div>
         </section>
@@ -43,10 +43,10 @@
         </div>
 
         <div class="recipes-grid">
-            {% for recipe in recipts_data %}
+            {% for recipe in recipes_data %}
             
             <article class="recipe-card">
-                <img src={{recipe.image}} alt="Пицца" class="recipe-image">
+                <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
                 <div class="recipe-info">
                     <h3 class="recipe-title">{{ recipe.title }}</h3>
                     <p class="recipe-description">{{ recipe.body }}.</p>
@@ -67,19 +67,19 @@
             <button id="closeModalBtn" class="btn-close">&times;</button>
         </div>
         <form action="/Service/Profile" method="POST" enctype="multipart/form-data" class="modal-form">
+
             <!-- Название -->
             <div class="form-group">
                 <label for="recipeTitle">Название рецепта:</label>
                 <input type="text" id="recipeTitle" name="title" required placeholder="Например: Маргарита">
             </div>
             
-            <!-- Категория (Новое поле) -->
+            <!-- Категория -->
             <div class="form-group">
                 <label for="recipeCategory">Категория рецепта:</label>
                 <select id="recipeCategory" name="category" required>
                     <option value="" disabled selected>-- Выберите категорию --</option>
                     {% for category in categories_data %}
-                        <!-- Если category это объект из БД, пишите {{ category.id }} и {{ category.name }} -->
                         <option value="{{ category.id }}">{{ category.name }}</option>
                     {% endfor %}
                 </select>
@@ -98,7 +98,7 @@
                     <select id="ingredientSelector">
                         <option value="" disabled selected>-- Выберите ингредиент --</option>
                         {% for ingredient in ingredients_data %}
-                            <option value="{{ ingredient }}" data-name="{{ ingredient }}">{{ ingredient }}</option>
+                            <option value="{{ ingredient.id }}" data-name="{{ ingredient.name }}">{{ ingredient.name }}</option>
                         {% endfor %}
                     </select>
                     <button type="button" id="addIngredientBtn" class="btn-small" style="white-space: nowrap;">+ Добавить</button>

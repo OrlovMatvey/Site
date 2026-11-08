@@ -29,7 +29,7 @@ def is_authenticated(request: Request, response: Response, db: Session = Depends
     access_token = request.cookies.get("access_token")
     refresh_token = request.cookies.get("refresh_token")
     if access_token and decode_token(access_token):
-        return True
+        return access_token
     if refresh_token:
         data = decode_token(refresh_token)
         if data:
