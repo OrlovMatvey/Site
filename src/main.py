@@ -3,7 +3,7 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.auth import auth_router
@@ -51,7 +51,13 @@ async def auth_exception_handler(request: Request, exc: HTTPException) -> Redire
         RedirectResponse: Редирект на страницу регистрации
     """
     return RedirectResponse(url="/Auth/SignUp", status_code=303)
-# Нужно добавить хендлеры для остальных исключений и задействовать шаблон для ошибок
+
+
+@app.exception_handler(HTTPException)
+async def general_exception_handler(request: Request, exc: HTTPException) -> HTMLResponse:
+    context = {"status_code": exc.status_code, "detail": exc.detail}
+    return settings.TEMPLATES.TemplateResponse(request=request, name="error.html", context=context)
+
 
 app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
 app.include_router(auth_router)
