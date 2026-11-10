@@ -1,58 +1,94 @@
 {% extends "header.html" %}
 {% block title %}Админ-панель{% endblock %}
 {% block content %}
-<!-- Основной контент страницы -->
 <div class="content-container">
     
     <div class="page-header">
-        <h1>Панель управления базой данных</h1>
+        <h1>Панель управления: {{ title_table }}</h1>
     </div>
 
     <div class="admin-dashboard">
         
-        <!-- Боковая панель переключения сущностей (Таблиц БД) -->
+        <!-- Боковая панель: переключение таблиц через GET-параметры -->
         <aside class="admin-sidebar">
             <ul class="sidebar-menu">
-                <li><a href="#" class="active">👤 Пользователи</a></li>
-                <li><a href="#">🔑 Токены пользователей</a></li>
-                <li><a href="#">🍕 Рецепты</a></li>
-                <li><a href="#">🥕 Ингредиенты</a></li>
-                <li><a href="#">📜 Ингредиенты рецептов</a></li>
-                <li><a href="#">💬 Комментарии</a></li>
-                <li><a href="#">🏷️ Категории</a></li>
-                <li><a href="#">⭐ Избранные рецепты</a></li>
+                <li>
+                    <a href="/Admin?table=users" class="{% if active_table == 'users' %}active{% endif %}">👤 Пользователи</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=tokens" class="{% if active_table == 'tokens' %}active{% endif %}">🔑 Токены пользователей</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=recipes" class="{% if active_table == 'recipes' %}active{% endif %}">🍕 Рецепты</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=ingredients" class="{% if active_table == 'ingredients' %}active{% endif %}">🥕 Ингредиенты</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=recipe_ingredients" class="{% if active_table == 'recipe_ingredients' %}active{% endif %}">📜 Ингредиенты рецептов</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=comments" class="{% if active_table == 'comments' %}active{% endif %}">💬 Комментарии</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=categories" class="{% if active_table == 'categories' %}active{% endif %}">🏷️ Категории</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=favorites" class="{% if active_table == 'favorites' %}active{% endif %}">⭐ Избранные рецепты</a>
+                </li>
             </ul>
         </aside>
 
-        <!-- Контентная область управления текущей таблицей -->
+        <!-- Контентная область -->
         <section class="admin-content">          
 
-            <!-- Таблица с данными из БД -->
             <div class="db-table-container">
-                <table class="db-table">
+                <table class="db-table" style="table-layout: fixed; width: 100%;">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Пользователь</th>
-                            <th>Email</th>
-                            <th>Роль</th>
-                            <th>Рецепты</th>
-                            <th style="text-align: right;">Действия</th>
+                            <!-- Динамически выводим заголовки столбцов -->
+                            {% for field in fields %}
+                                <th>{{ field.upper() }}</th>
+                            {% endfor %}
+                            <th style="text-align: right; width: 180px;">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Строка пользователя 1 -->
-                        <tr>
-                            <td><strong>#1024</strong></td>
-                            <td>Александр Иванов</td>
-                            <td>alex@example.com</td>
-                            <td><span class="badge badge-admin">Администратор</span></td>
-                            <td>14</td>
-                            <td style="text-align: right;">
-                                <button class="action-btn btn-edit">Изменить</button>
-                                <button class="action-btn btn-delete">Удалить</button>
-                            </td>
-                        </tr>
+                        <!-- Перебираем строки из базы данных -->
+                        {% for row in rows %}
+                            <tr>
+                                {% set row_dict = row.get_dict() %}
+                                {% for field in fields %}
+                                    <!-- Защита интерфейса: max-width, overflow и text-overflow прячут байты в "..." -->
+                                    <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ row_dict[field] }}">
+                                        
+                                        <!-- Сначала проверяем, является ли значение СТРОГО булевым типом -->
+                                        {% if row_dict[field] is boolean %}
+                                            {% if row_dict[field] == True %}
+                                                <span class="badge badge-admin" style="background: #28a745; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 12px;">Да</span>
+                                            {% else %}
+                                                <span style="color: #6c757d;">Нет</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <!-- Для любых других типов (включая id = 1) просто выводим само значение -->
+                                            {{ row_dict[field] }}
+                                        {% endif %}
+
+                                    </td>
+                                {% endfor %}
+                                
+                                <td style="text-align: right; width: 180px; white-space: nowrap;">
+                                    <button class="action-btn btn-edit" data-id="{{ row_dict['id'] }}">Изменить</button>
+                                    <button class="action-btn btn-delete" data-id="{{ row_dict['id'] }}">Удалить</button>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="{{ fields|length + 1 }}" style="text-align: center; padding: 20px;">
+                                    Таблица пуста или еще не создана.
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -60,4 +96,146 @@
         </section>
     </div>
 </div>
+<!-- В самый конец блока content -->
+<div id="editModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 8px; width: 400px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+        <span class="close-modal" style="float: right; font-size: 24px; cursor: pointer; font-weight: bold;">&times;</span>
+        <h2 style="margin-top: 0;">Редактирование записи</h2>
+        <form id="editForm">
+            <div id="formFieldsContainer">
+                <!-- Сюда JavaScript будет динамически добавлять поля ввода -->
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="button" class="action-btn" id="cancelEditBtn" style="background: #6c757d; color: #fff;">Отмена</button>
+                <button type="submit" class="action-btn" style="background: #28a745; color: #fff;">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Получаем имя текущей таблицы из URL параметров (например, ?table=tokens)
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentTable = urlParams.get('table') || 'users';
+
+    // === ЛОГИКА УДАЛЕНИЯ ===
+    document.querySelectorAll(".btn-delete").forEach(button => {
+        button.addEventListener("click", async (e) => {
+            const rowId = button.getAttribute("data-id");
+            
+            if (confirm(`Вы уверены, что хотите удалить запись #${rowId}?`)) {
+                try {
+                    const response = await fetch(`/Admin/${currentTable}/${rowId}`, {
+                        method: "DELETE"
+                    });
+                    
+                    const result = await response.json();
+                    if (response.ok && result.status === "success") {
+                        // Находим строку таблицы <tr> и плавно удаляем её из HTML
+                        button.closest("tr").remove();
+                    } else {
+                        alert("Ошибка при удалении: " + (result.detail || "Неизвестная ошибка"));
+                    }
+                } catch (error) {
+                    alert("Не удалось связаться с сервером");
+                }
+            }
+        });
+    });
+
+    // === ЛОГИКА ИЗМЕНЕНИЯ (МОДАЛЬНОЕ ОКНО) ===
+    const modal = document.getElementById("editModal");
+    const editForm = document.getElementById("editForm");
+    const container = document.getElementById("formFieldsContainer");
+    let activeRowId = null;
+
+    document.querySelectorAll(".btn-edit").forEach(button => {
+        button.addEventListener("click", (e) => {
+            activeRowId = button.getAttribute("data-id");
+            const row = button.closest("tr");
+            container.innerHTML = ""; // Очищаем старые поля формы
+
+            // Собираем все данные из текущей строки таблицы
+            // Браузер пробежится по ячейкам <td> и создаст input под каждое поле
+            const headers = Array.from(document.querySelectorAll(".db-table th")).map(th => th.innerText.toLowerCase());
+            const cells = Array.from(row.querySelectorAll("td"));
+
+            headers.forEach((header, index) => {
+                if (header === "действия") return; // Кнопки не редактируем
+                
+                const cellValue = cells[index].getAttribute("title") || cells[index].innerText.trim();
+
+                const fieldWrapper = document.createElement("div");
+                fieldWrapper.style.marginBottom = "12px";
+
+                const label = document.createElement("label");
+                label.innerText = header.toUpperCase();
+                label.style.display = "block";
+                label.style.marginBottom = "4px";
+                label.style.fontWeight = "bold";
+
+                const input = document.createElement("input");
+                input.name = header;
+                input.value = cellValue;
+                input.style.width = "100%";
+                input.style.padding = "6px";
+                input.style.boxSizing = "border-box";
+
+                // Запрещаем редактировать ID
+                if (header === "id") {
+                    input.disabled = true;
+                    input.style.backgroundColor = "#e9ecef";
+                }
+
+                fieldWrapper.appendChild(label);
+                fieldWrapper.appendChild(input);
+                container.appendChild(fieldWrapper);
+            });
+
+            modal.style.display = "block"; // Показываем модальное окно
+        });
+    });
+
+    // Закрытие модального окна
+    const closeModal = () => { modal.style.display = "none"; };
+    document.querySelector(".close-modal").addEventListener("click", closeModal);
+    document.getElementById("cancelEditBtn").addEventListener("click", closeModal);
+
+    // Отправка измененных данных на сервер
+    editForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(editForm);
+        const data = {};
+        
+        // Превращаем данные формы в обычный JSON-объект
+        formData.forEach((value, key) => {
+            // Приведение строковых "Да/Нет" к булевым значениям для БД
+            if (value.toLowerCase() === "да") value = true;
+            if (value.toLowerCase() === "нет") value = false;
+            data[key] = value;
+        });
+
+        try {
+            const response = await fetch(`/Admin/${currentTable}/${activeRowId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (response.ok && result.status === "success") {
+                alert("Данные успешно сохранены!");
+                window.location.reload(); // Перезагружаем страницу, чтобы увидеть изменения из БД
+            } else {
+                alert("Ошибка сохранения: " + (result.detail || "Неизвестная ошибка"));
+            }
+        } catch (error) {
+            alert("Ошибка при отправке данных на сервер");
+        }
+    });
+});
+</script>
+
 {% endblock %}

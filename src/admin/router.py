@@ -1,19 +1,48 @@
 """Модуль эндпоинтов для Администрации"""
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import HTMLResponse
+from sqlalchemy.orm import Session
 
 from src.config import settings
-from src.dependencies import get_current_admin
+from src.dependencies import get_current_admin, get_db
+from .service import get_admin_dashboard_data, delete_row_by_id, update_row_by_id
 
-router = APIRouter(prefix="/Admin", tags=["AdminProcess"])
+router = APIRouter(prefix="/Admin", tags=["AdminProcess"], dependencies=[Depends(get_current_admin)])
 
 
 @router.get("/")
 def get_admin_page(
     request: Request,
-    admin: bool = Depends(get_current_admin)
+    table: str = "users",
+    db: Session = Depends(get_db)
 ) -> HTMLResponse:
-    context = {"is_admin": admin}
+    panel_data = get_admin_dashboard_data(db, table_name=table)
     return settings.TEMPLATES.TemplateResponse(
-        request=request, name="admin.html", context=context
+        request=request, name="admin.html", context={
+            "request": request,
+            "fields": panel_data["fields"],
+            "rows": panel_data["rows"],
+            "title_table": panel_data["verbose_name"],
+            "active_table": table
+        }
     )
+
+
+@router.delete("/{table}/{id}", status_code=200)
+def delete_table_row(table: str, id: int, db: Session = Depends(get_db)):
+    """Универсальное удаление записи из любой таблицы"""
+    success = delete_row_by_id(db, table_name=table, row_id=id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Запись не найдена или защищена")
+    return {"status": "success", "message": "Запись успешно удалена"}
+
+
+@router.post("/{table}/{id}", status_code=200)
+async def update_table_row(table: str, id: int, request: Request, db: Session = Depends(get_db)):
+    """Универсальное обновление записи"""
+    # Получаем данные, которые админ отправил из формы модального окна
+    form_data = await request.json() 
+    success = update_row_by_id(db, table_name=table, row_id=id, data=form_data)
+    if not success:
+        raise HTTPException(status_code=400, detail="Не удалось обновить запись")
+    return {"status": "success", "message": "Запись успешно обновлена"}

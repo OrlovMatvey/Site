@@ -1,12 +1,14 @@
 """Модуль для инициализации базы данных"""
 from typing import Any
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase
 
 from src.config import settings
 
-engine = create_engine(settings.DB_URL, echo=True)
+DATABASE_URL = settings.DB_URL
+# Создаем engine для приложения
+engine = create_engine(DATABASE_URL, echo=True)
 
 
 class Base(DeclarativeBase):

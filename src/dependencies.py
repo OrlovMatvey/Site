@@ -65,6 +65,9 @@ def get_current_user(request: Request, access_token: str = Depends(is_authentica
 
 
 def get_current_admin(user_object: 'UserData' = Depends(get_current_user)):
+    if not user_object:
+        raise HTTPException(status_code=401, detail="Пользователь не авторизован")
+    
     if not user_object.is_admin:
         raise HTTPException(403, detail="Недостаточно прав доступа")
     return user_object.is_admin

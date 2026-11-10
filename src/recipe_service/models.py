@@ -1,6 +1,6 @@
 """Модуль ORM-моделей БД для сервиса Рецептов"""
 from sqlalchemy import JSON, Float, ForeignKey, LargeBinary, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
 
@@ -17,6 +17,11 @@ class RecipeData(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
     count_likes: Mapped[int] = mapped_column(nullable=True)
     count_dislikes: Mapped[int] = mapped_column(nullable=True)
+
+    ingredients: Mapped[list["RecipeIngredientData"]] = relationship(
+        "RecipeIngredientData",
+        cascade="all, delete-orphan"
+    )
 
 
 class CommentData(Base):

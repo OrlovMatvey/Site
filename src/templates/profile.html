@@ -8,10 +8,10 @@
             <div class="profile-details">
                 <h2>{{ user_data[0].username }}</h2>
                 <p>Электронная почта: {{ user_data[0].email }}</p>
-                {% if recipes_data[0].title is defined %}
+                {% if recipes_data%}
                     <p>Добавлено рецептов: {{ recipes_data|length }}</p>
                 {% else %}
-                    <p>Добавлено рецептов: {{ recipes_data[0] }}</p>
+                    <p>Добавлено рецептов: Вы еще не добавили свои рецепты!</p>
                 {% endif %}
             </div>
         </section>
@@ -35,8 +35,12 @@
                     </div>
                 </div>
             </article>
-
-             {% endfor %}
+            {% else %}
+            <!-- Этот блок выполнится на автомате, если список recipes_data пуст -->
+            <div class="no-recipes-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6c757d;">
+                <p>Вы еще не добавили свои рецепты!</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
     <!-- Модальное окно для добавления рецепта -->

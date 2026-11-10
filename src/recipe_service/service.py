@@ -29,12 +29,9 @@ def get_profile_from_db(user_object: UserData, db: Session) -> dict[str, list]:
     categories = db.scalars(select(CategoryData)).all()
     ingredients = db.scalars(select(IngredientData)).all()
     recipes = db.scalars(select(RecipeData).where(RecipeData.user_id == user_object["id"])).all()
-    if not recipes:
-        recipes_data.append("Вы еще не добавили свои рецепты!")
-    else:
-        for recipe in recipes:
-            recipe.image = base64.b64encode(recipe.image).decode("utf-8")
-            recipes_data.append(recipe.get_dict())
+    for recipe in recipes:
+        recipe.image = base64.b64encode(recipe.image).decode("utf-8")
+        recipes_data.append(recipe.get_dict())
     for category in categories:
         categories_data.append({"name": category.name, "id": category.id})
     for ingredient in ingredients:

@@ -16,7 +16,7 @@
                 <li><a href="/Service/Main" class="{% if request.url.path == '/Service/Main' %}active{% endif %}">Главная</a></li>
                 <li><a href="/Service/Profile" class="{% if request.url.path == '/Service/Profile' %}active{% endif %}">Мой профиль</a></li>
                 {% if  is_admin %}
-                <li><a href="/Service/Admin" class="{% if request.url.path == '/Service/Admin' %}active{% endif %}">Админ</a></li>
+                <li><a href="/Admin" class="{% if request.url.path == '/Service/Admin' %}active{% endif %}">Админ</a></li>
                 {% endif %}
                 <li><a href="/Auth/Logout">Выйти</a></li>
             </ul>
