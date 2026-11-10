@@ -1,4 +1,5 @@
-from sqlalchemy import select, sql
+"""Модуль бизнес-логики для сервиса Администрации"""
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.auth import UserData, UserTokenData

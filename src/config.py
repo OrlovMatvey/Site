@@ -1,11 +1,8 @@
 """Модуль конфигурации проекта"""
 from pathlib import Path
 
-from fastapi.templating import Jinja2Templates
-from pydantic import computed_field
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from src.dependencies import add_auth_context
 
 DOTENV = Path(__file__).resolve().parent.parent
 
@@ -19,15 +16,11 @@ class Settings(BaseSettings):
     DB_URL: str
     MASTER_URL: str
     DB_NAME: str
+    TEMPLATES_DIR: Path = Field(DOTENV/"src/templates")
+    STATIC_DIR: Path = Field(DOTENV/"src/static")
 
     model_config = SettingsConfigDict(
         env_file=DOTENV/".env", arbitrary_types_allowed=True
     )
-
-    @computed_field
-    @property
-    def TEMPLATES(self) -> Jinja2Templates:
-        return Jinja2Templates(directory=(DOTENV/"src/templates"), context_processors=[add_auth_context])
-
 
 settings = Settings()

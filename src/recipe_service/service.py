@@ -5,12 +5,12 @@ from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from src.auth import UserData
+from src.common import CurrentUserModel
 
 from .models import CategoryData, IngredientData, RecipeData, RecipeIngredientData
 
 
-def get_profile_from_db(user_object: UserData, db: Session) -> dict[str, list]:
+def get_profile_from_db(user_object: CurrentUserModel, db: Session) -> dict[str, list]:
     """Получение информации из БД для шаблона профиля
 
     Args:
@@ -24,10 +24,9 @@ def get_profile_from_db(user_object: UserData, db: Session) -> dict[str, list]:
     recipes_data: list[dict] = []
     categories_data: list[dict] = []
     ingredients_data: list[dict] = []
-    user_object = user_object.get_dict()
     categories = db.scalars(select(CategoryData)).all()
     ingredients = db.scalars(select(IngredientData)).all()
-    recipes = db.scalars(select(RecipeData).where(RecipeData.user_id == user_object["id"])).all()
+    recipes = db.scalars(select(RecipeData).where(RecipeData.user_id == user_object.id)).all()
     for recipe in recipes:
         recipe.image = base64.b64encode(recipe.image).decode("utf-8")
         recipes_data.append(recipe.get_dict())
@@ -43,7 +42,7 @@ def get_profile_from_db(user_object: UserData, db: Session) -> dict[str, list]:
 
 
 def add_new_recipe(
-    user_object: UserData, title: str, category: int, body: str,
+    user_object: CurrentUserModel, title: str, category: int, body: str,
     ingredient_ids: list[int], ingredient_volumes: list[float],
     ingredient_units: list[str], image: bytes, db: Session
 ) -> RecipeData:

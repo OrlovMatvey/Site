@@ -1,11 +1,12 @@
-"""Модуль эндпоинтов для Администрации"""
-from fastapi import APIRouter, Depends, Request, HTTPException
+"""Модуль эндпоинтов для сервиса Администрации"""
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
-from src.config import settings
+from src.common import TEMPLATES
 from src.dependencies import get_current_admin, get_db
-from .service import get_admin_dashboard_data, delete_row_by_id, update_row_by_id
+
+from .service import delete_row_by_id, get_admin_dashboard_data, update_row_by_id
 
 router = APIRouter(prefix="/Admin", tags=["AdminProcess"], dependencies=[Depends(get_current_admin)])
 
@@ -17,7 +18,7 @@ def get_admin_page(
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
     panel_data = get_admin_dashboard_data(db, table_name=table)
-    return settings.TEMPLATES.TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request, name="admin.html", context={
             "request": request,
             "fields": panel_data["fields"],

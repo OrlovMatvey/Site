@@ -3,8 +3,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
-from src.auth import UserData
-from src.config import settings
+from src.common import TEMPLATES, CurrentUserModel
 from src.dependencies import get_current_user, get_db
 
 from .schemas import RecipeModel
@@ -16,7 +15,7 @@ router = APIRouter(prefix="/Service", tags=["BusinessProcess"])
 @router.get("/Main")
 def get_index_page(
     request: Request,
-    current_user: UserData = Depends(get_current_user),
+    current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
     """Эндпоинт для получения главной страницы
@@ -30,7 +29,7 @@ def get_index_page(
         HTMLResponse: Возвращает шаблон главной страницы
     """
     context = get_recipes_from_db(db)
-    return settings.TEMPLATES.TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request, name="index.html", context=context
     )
 
@@ -38,7 +37,7 @@ def get_index_page(
 @router.get("/Profile")
 def get_profile_page(
     request: Request,
-    current_user: UserData = Depends(get_current_user),
+    current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
     """Эндпоинт для получения страницы профиля
@@ -52,7 +51,7 @@ def get_profile_page(
         HTMLResponse: Возвращает шаблон страницы профиля
     """
     context = get_profile_from_db(current_user, db)
-    return settings.TEMPLATES.TemplateResponse(
+    return TEMPLATES.TemplateResponse(
         request=request, name="profile.html", context=context
     )
 
@@ -60,7 +59,7 @@ def get_profile_page(
 @router.post("/Profile")
 def create_recipe(
     recipe_data: RecipeModel = Depends(RecipeModel.formBody),
-    current_user: UserData = Depends(get_current_user),
+    current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> Response:
     """Эндпоинт для создания нового рецепта

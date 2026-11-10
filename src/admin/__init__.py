@@ -1,3 +1,4 @@
+"""Модуль инициализации пакета для сервиса Администрации"""
 from .router import router as admin_router
 
 __all__ = [

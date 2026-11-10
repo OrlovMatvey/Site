@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
+from src.common import CurrentUserModel
 from src.security import create_access_token, decode_token
 
 
@@ -54,7 +55,7 @@ def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
     raise HTTPException(status_code=401, detail="Пользователь не авторизован")
 
 
-def get_current_user(request: Request, access_token: str = Depends(is_authenticated), db: Session = Depends(get_db)) -> 'UserData':
+def get_current_user(request: Request, access_token: str = Depends(is_authenticated), db: Session = Depends(get_db)) -> CurrentUserModel:
     """Зависимость для получения текущего пользователя
 
     Args:
@@ -68,13 +69,14 @@ def get_current_user(request: Request, access_token: str = Depends(is_authentica
     from src.auth import UserData
     user_id = decode_token(access_token)["sub"]
     user_object = db.scalar(select(UserData).where(UserData.id == user_id))
+    user_object = CurrentUserModel.model_validate(user_object)
 
     request.state.user = user_object
 
     return user_object
 
 
-def get_current_admin(user_object: 'UserData' = Depends(get_current_user)) -> bool:
+def get_current_admin(user_object: CurrentUserModel = Depends(get_current_user)) -> bool:
     """Зависимость для проверки прав пользователя
 
     Args:

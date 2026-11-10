@@ -1,75 +1,26 @@
 """Главный модуль запуска приложения"""
-from pathlib import Path
-
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.admin import admin_router
 from src.auth import auth_router
+from src.common import (
+    auth_exception_handler,
+    auto_set_refresh_cookies,
+    general_exception_handler,
+)
 from src.config import settings
 from src.dependencies import is_authenticated
 from src.recipe_service import service_router
 
 app = FastAPI()
 
-BASE_DIR = Path(__file__).absolute().parent
-
-
-@app.middleware("http")
-async def auto_set_refresh_cookies(request: Request, call_next) -> Response:
-    """Мидлвар для добавления access_token в ответ
-
-    Args:
-        request (Request): Тело запроса.
-        call_next (_type_): Функция для управления цепочкой событий.
-
-    Returns:
-        Response: Тело ответа с access_token внутри.
-    """
-    response = await call_next(request)
-    new_access_token = getattr(request.state, "new_access_token", None)
-    if new_access_token:
-        response.set_cookie(
-            key="access_token",
-            value=new_access_token,
-            httponly=True,
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES*settings.SECONDS_IN_MINUTE
-        )
-    return response
-
-
-@app.exception_handler(401)
-async def auth_exception_handler(request: Request, exc: HTTPException) -> RedirectResponse:
-    """Обработчик для исключения с кодом 401
-
-    Args:
-        request (Request): Тело запроса
-        exc (HTTPException): Исключение
-
-    Returns:
-        RedirectResponse: Редирект на страницу регистрации
-    """
-    return RedirectResponse(url="/Auth/SignUp", status_code=303)
-
-
-@app.exception_handler(HTTPException)
-async def general_exception_handler(request: Request, exc: HTTPException) -> HTMLResponse:
-    """Общий обработчик для исключений
-
-    Args:
-        request (Request): Тело запроса.
-        exc (HTTPException): Объект исключения.
-
-    Returns:
-        HTMLResponse: Шаблон с выводом ошибки.
-    """
-    context = {"status_code": exc.status_code, "detail": exc.detail}
-    return settings.TEMPLATES.TemplateResponse(request=request, name="error.html", context=context)
-
-
-app.mount("/static", StaticFiles(directory=BASE_DIR/"static"), name="static")
+app.add_exception_handler(general_exception_handler)
+app.add_exception_handler(auth_exception_handler)
+app.add_middleware(auto_set_refresh_cookies)
+app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
 app.include_router(auth_router)
 app.include_router(service_router)
 app.include_router(admin_router)

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Cookie, Depends, Request, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from src.config import settings
+from src.common import TEMPLATES
 from src.dependencies import get_db
 from src.security import decode_token
 
@@ -88,7 +88,7 @@ def get_register_page(request: Request) -> Response:
     access_token = request.cookies.get("access_token")
     if access_token and decode_token(access_token):
         return RedirectResponse(url="/", status_code=303)
-    return settings.TEMPLATES.TemplateResponse(request=request, name="user_up.html")
+    return TEMPLATES.TemplateResponse(request=request, name="user_up.html")
 
 
 @router.get("/SignIn")
@@ -104,7 +104,7 @@ def get_login_page(request: Request) -> Response:
     access_token = request.cookies.get("access_token")
     if access_token and decode_token(access_token):
         return RedirectResponse(url="/", status_code=303)
-    return settings.TEMPLATES.TemplateResponse(request=request, name="user_in.html")
+    return TEMPLATES.TemplateResponse(request=request, name="user_in.html")
 
 
 @router.get("/Logout")
