@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Мой сайт{% endblock %}</title>
+    <link rel="icon" href="/static/favicon.png">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="main-layout">
+        <!-- Верхнее навигационное меню -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/Service/Main" class="navbar-logo">🍽️ Кулинар</a>
+            <ul class="navbar-menu">
+                <li><a href="/Service/Main" class="{% if request.url.path == '/Service/Main' %}active{% endif %}">Главная</a></li>
+                <li><a href="/Service/Profile" class="{% if request.url.path == '/Service/Profile' %}active{% endif %}">Мой профиль</a></li>
+                {% if  is_admin %}
+                <li><a href="/Service/Admin" class="{% if request.url.path == '/Service/Admin' %}active{% endif %}">Админ</a></li>
+                {% endif %}
+                <li><a href="/Auth/Logout">Выйти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

@@ -1,54 +1,32 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная — Поварской Клуб</title>
-    <link rel="icon" href="/static/favicon.png">
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body class="main-layout">
+{% extends "header.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<!-- Основной контент страницы -->
+<div class="content-container">
+    
+    <div class="page-header">
+        <h1>Свежие рецепты</h1>
+    </div>
 
-    <!-- Верхнее навигационное меню -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/Service/Main" class="navbar-logo">🍽️ Кулинар</a>
-            <ul class="navbar-menu">
-                <li><a href="/Service/Main" class="active">Главная</a></li>
-                <li><a href="/Service/Profile">Мой профиль</a></li>
-                <li><a href="/Auth/Logout">Выйти</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Основной контент страницы -->
-    <main class="content-container">
+    <!-- Сетка с карточками -->
+    <div class="recipes-grid">
         
-        <div class="page-header">
-            <h1>Свежие рецепты</h1>
-        </div>
-
-        <!-- Сетка с карточками -->
-        <div class="recipes-grid">
-            
-            {% for recipe in recipes_data %}
-            
-            <article class="recipe-card">
-                <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
-                <div class="recipe-info">
-                    <h3 class="recipe-title">{{ recipe.title }}</h3>
-                    <p class="recipe-description">{{ recipe.body }}.</p>
-                    <div class="recipe-meta">
-                        <span>⏱️ 30 мин</span>
-                        <span>✍️ Редактировать</span>
-                    </div>
+        {% for recipe in recipes_data %}
+        
+        <article class="recipe-card">
+            <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
+            <div class="recipe-info">
+                <h3 class="recipe-title">{{ recipe.title }}</h3>
+                <p class="recipe-description">{{ recipe.body }}.</p>
+                <div class="recipe-meta">
+                    <span>{{ recipe.category }}</span>
+                    <span>✍️ Редактировать</span>
                 </div>
-            </article>
+            </div>
+        </article>
 
-             {% endfor %}
+        {% endfor %}
 
-        </div>
-    </main>
-
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}

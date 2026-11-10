@@ -10,6 +10,7 @@ from src.auth import auth_router
 from src.config import settings
 from src.dependencies import is_authenticated
 from src.recipe_service import service_router
+from src.admin import admin_router
 
 app = FastAPI()
 
@@ -59,9 +60,10 @@ async def general_exception_handler(request: Request, exc: HTTPException) -> HTM
     return settings.TEMPLATES.TemplateResponse(request=request, name="error.html", context=context)
 
 
-app.mount("/static", StaticFiles(directory=BASE_DIR/"static"))
+app.mount("/static", StaticFiles(directory=BASE_DIR/"static"), name="static")
 app.include_router(auth_router)
 app.include_router(service_router)
+app.include_router(admin_router)
 
 
 @app.get("/")

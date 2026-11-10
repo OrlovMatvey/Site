@@ -5,6 +5,8 @@ from fastapi.templating import Jinja2Templates
 from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from src.dependencies import add_auth_context
+
 DOTENV = Path(__file__).resolve().parent.parent
 
 
@@ -25,7 +27,7 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def TEMPLATES(self) -> Jinja2Templates:
-        return Jinja2Templates(directory=(DOTENV/"src/templates"))
+        return Jinja2Templates(directory=(DOTENV/"src/templates"), context_processors=[add_auth_context])
 
 
 settings = Settings()

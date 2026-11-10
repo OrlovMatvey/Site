@@ -4,8 +4,6 @@ from datetime import UTC, datetime, timedelta
 from jose import jwt
 from pwdlib import PasswordHash
 
-from src.config import settings
-
 pwd_context = PasswordHash.recommended()
 
 
@@ -43,6 +41,7 @@ def create_access_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
+    from src.config import settings
     data = data.copy()
     expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     data["exp"] = expire
@@ -59,6 +58,7 @@ def create_refresh_token(data: dict) -> str:
     Returns:
         str: Кодированный токен
     """
+    from src.config import settings
     data = data.copy()
     expire = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     data["exp"] = expire
@@ -75,5 +75,6 @@ def decode_token(token: str) -> dict:
     Returns:
         dict: Информация из тела токена
     """
+    from src.config import settings
     data = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
     return data

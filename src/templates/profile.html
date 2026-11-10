@@ -1,28 +1,7 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой профиль — Поварской Клуб</title>
-    <link rel="icon" href="/static/favicon.png">
-    <link rel="stylesheet" href="/static/style.css">
-    <script defer src="/static/profile.js"></script>
-</head>
-<body class="main-layout">
-
-    <!-- Верхнее навигационное меню -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="/Service/Main" class="navbar-logo">🍽️ Кулинар</a>
-            <ul class="navbar-menu">
-                <li><a href="/Service/Main">Главная</a></li>
-                <li><a href="/Service/Profile" class="active">Мой профиль</a></li>
-                <li><a href="/Auth/Logout">Выйти</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <main class="content-container">
+{% extends "header.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+    <div class="content-container">
         
         <section class="profile-block">
             <div class="profile-avatar">{{user_data[0].username[0]}}</div>
@@ -59,7 +38,7 @@
 
              {% endfor %}
         </div>
-    </main>
+    </div>
     <!-- Модальное окно для добавления рецепта -->
     <dialog id="recipeModal" class="modal-dialog">
         <div class="modal-header">
@@ -134,5 +113,8 @@
             </div>
         </form>
     </dialog>
-</body>
-</html>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', path='/profile.js') }}"></script>
+{% endblock %}

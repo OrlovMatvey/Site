@@ -1,10 +1,16 @@
 """Модуль эндпоинтов для сервиса Рецептов"""
 from fastapi import APIRouter, Depends, Request, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
+from src.auth import UserData
 from src.config import settings
-from src.dependencies import get_db, is_authenticated
+from src.dependencies import (
+    get_current_admin,
+    get_current_user,
+    get_db,
+    is_authenticated,
+)
 
 from .schemas import RecipeModel
 from .service import add_new_recipe, get_profile_from_db, get_recipes_from_db
@@ -15,7 +21,7 @@ router = APIRouter(prefix="/Service", tags=["BusinessProcess"])
 @router.get("/Main")
 def get_index_page(
     request: Request,
-    access_token: bool = Depends(is_authenticated),
+    current_user: UserData = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
     """Эндпоинт для получения главной страницы
@@ -37,7 +43,7 @@ def get_index_page(
 @router.get("/Profile")
 def get_profile_page(
     request: Request,
-    access_token: bool = Depends(is_authenticated),
+    current_user: UserData = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
     """Эндпоинт для получения страницы профиля
@@ -50,26 +56,15 @@ def get_profile_page(
     Returns:
         HTMLResponse: Возвращает шаблон страницы профиля
     """
-    context = get_profile_from_db(access_token, db)
+    context = get_profile_from_db(current_user, db)
     return settings.TEMPLATES.TemplateResponse(
         request=request, name="profile.html", context=context
     )
 
-# Надо сделать админ-панель
-@router.get("/Admin")
-def get_admin_page(
-    request: Request,
-    access_token: bool = Depends(is_authenticated)
-) -> HTMLResponse:
-    return settings.TEMPLATES.TemplateResponse(
-        request=request, name="admin.html"
-    )
-
-
 @router.post("/Profile")
 def create_recipe(
     recipe_data: RecipeModel = Depends(RecipeModel.formBody),
-    access_token: bool = Depends(is_authenticated),
+    current_user: UserData = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> Response:
     """Эндпоинт для создания нового рецепта
@@ -83,10 +78,10 @@ def create_recipe(
         Response: Пустой ответ 204
     """
     add_new_recipe(
-        access_token,
+        current_user,
         recipe_data.title, recipe_data.category,
         recipe_data.body, recipe_data.ingredient_ids,
         recipe_data.ingredient_volumes, recipe_data.ingredient_units,
         recipe_data.image, db
         )
-    return Response(status_code=204)
+    return RedirectResponse(url="/Service/Profile", status_code=303)

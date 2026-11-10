@@ -11,7 +11,7 @@ from src.security import decode_token
 from .models import CategoryData, IngredientData, RecipeData, RecipeIngredientData
 
 
-def get_profile_from_db(access_token: str, db: Session) -> dict[str, list]:
+def get_profile_from_db(user_object: UserData, db: Session) -> dict[str, list]:
     """Получение информации из БД для шаблона профиля
 
     Args:
@@ -22,16 +22,13 @@ def get_profile_from_db(access_token: str, db: Session) -> dict[str, list]:
         dict[str, list]: Словарь с контекстом для шаблона.
     """
     context: dict[str, list] = {}
-    user_data: dict[str, str] = {}
     recipes_data: list[dict] = []
     categories_data: list[dict] = []
     ingredients_data: list[dict] = []
-    token_data = decode_token(access_token)
-    user_data = db.scalar(select(UserData).where(UserData.id == token_data["sub"]))
-    user_data = user_data.get_dict()
+    user_object = user_object.get_dict()
     categories = db.scalars(select(CategoryData)).all()
     ingredients = db.scalars(select(IngredientData)).all()
-    recipes = db.scalars(select(RecipeData).where(RecipeData.user_id == token_data["sub"])).all()
+    recipes = db.scalars(select(RecipeData).where(RecipeData.user_id == user_object["id"])).all()
     if not recipes:
         recipes_data.append("Вы еще не добавили свои рецепты!")
     else:
@@ -43,14 +40,14 @@ def get_profile_from_db(access_token: str, db: Session) -> dict[str, list]:
     for ingredient in ingredients:
         ingredients_data.append({"name": ingredient.name, "id": ingredient.id})
     context["categories_data"] = categories_data
-    context["user_data"] = [user_data]
+    context["user_data"] = [user_object]
     context["recipes_data"] = recipes_data
     context["ingredients_data"] = ingredients_data
     return context
 
 
 def add_new_recipe(
-    access_token: str, title: str, category: int, body: str,
+    user_object: UserData, title: str, category: int, body: str,
     ingredient_ids: list[int], ingredient_volumes: list[float],
     ingredient_units: list[str], image: bytes, db: Session
 ) -> RecipeData:
@@ -73,8 +70,7 @@ def add_new_recipe(
     Returns:
         RecipeData: Объект записи рецепта
     """
-    token_data = decode_token(access_token)
-    user_id = token_data["sub"]
+    user_id = user_object.id
     try:
         recipe_object = RecipeData(
             title=title,
