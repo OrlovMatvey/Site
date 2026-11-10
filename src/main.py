@@ -6,11 +6,11 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from src.admin import admin_router
 from src.auth import auth_router
 from src.config import settings
 from src.dependencies import is_authenticated
 from src.recipe_service import service_router
-from src.admin import admin_router
 
 app = FastAPI()
 
@@ -56,6 +56,15 @@ async def auth_exception_handler(request: Request, exc: HTTPException) -> Redire
 
 @app.exception_handler(HTTPException)
 async def general_exception_handler(request: Request, exc: HTTPException) -> HTMLResponse:
+    """Общий обработчик для исключений
+
+    Args:
+        request (Request): Тело запроса.
+        exc (HTTPException): Объект исключения.
+
+    Returns:
+        HTMLResponse: Шаблон с выводом ошибки.
+    """
     context = {"status_code": exc.status_code, "detail": exc.detail}
     return settings.TEMPLATES.TemplateResponse(request=request, name="error.html", context=context)
 

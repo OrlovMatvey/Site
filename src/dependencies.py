@@ -55,6 +55,16 @@ def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
 
 
 def get_current_user(request: Request, access_token: str = Depends(is_authenticated), db: Session = Depends(get_db)) -> 'UserData':
+    """Зависимость для получения текущего пользователя
+
+    Args:
+        request (Request): Тело запроса.
+        access_token (str, optional): Access token из зависимости. Defaults to Depends(is_authenticated).
+        db (Session, optional): Объект сессии в БД. Defaults to Depends(get_db).
+
+    Returns:
+        UserData: Текущий пользователь
+    """
     from src.auth import UserData
     user_id = decode_token(access_token)["sub"]
     user_object = db.scalar(select(UserData).where(UserData.id == user_id))
@@ -64,17 +74,36 @@ def get_current_user(request: Request, access_token: str = Depends(is_authentica
     return user_object
 
 
-def get_current_admin(user_object: 'UserData' = Depends(get_current_user)):
+def get_current_admin(user_object: 'UserData' = Depends(get_current_user)) -> bool:
+    """Зависимость для проверки прав пользователя
+
+    Args:
+        user_object (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
+
+    Raises:
+        HTTPException: Не авторизован
+        HTTPException: Недостаточно прав
+
+    Returns:
+        bool: Является ли юзер админом(True/False)
+    """
     if not user_object:
         raise HTTPException(status_code=401, detail="Пользователь не авторизован")
-    
     if not user_object.is_admin:
         raise HTTPException(403, detail="Недостаточно прав доступа")
     return user_object.is_admin
 
 
-def add_auth_context(request: Request):
+def add_auth_context(request: Request) -> dict:
+    """Общий констекст для шаблонов
+
+    Args:
+        request (Request): Тело запроса
+
+    Returns:
+        dict: Словарь с контекстом
+    """
     user = getattr(request.state, "user", None)
     return {
-        "is_admin": getattr(user, "is_admin", False) if user else False
+        "is_admin": getattr(user, "is_admin", False)
     }

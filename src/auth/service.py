@@ -1,5 +1,5 @@
 """Модуль бизнес-логики для сервиса Регистрации/Авторизации"""
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -9,7 +9,6 @@ from src.config import settings
 from src.security import (
     create_access_token,
     create_refresh_token,
-    decode_token,
     hash_password,
     verify_password,
 )
@@ -42,7 +41,7 @@ def create_new_user(username: str, email: str, password: str, db: Session) -> di
         db.flush()
         access_token = create_access_token({"sub": str(user_object.id)})
         refresh_token = create_refresh_token({"sub": str(user_object.id)})
-        join_user_token(refresh_token, db)
+        join_user_token(user_object.id, refresh_token, db)
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
@@ -75,8 +74,8 @@ def authenticate_user(email: str, password: str, db: Session) -> dict[str, str |
             return {
                 "access_token": access_token,
                 "refresh_token": refresh_token,
-                "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*settings.SECONDS_IN_MINUTE,
-                "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*settings.SECONDS_IN_DAY,
+                "access_expires_in": timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+                "refresh_expires_in": timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
                 "token_type": "bearer"
             }
         else:
@@ -85,32 +84,39 @@ def authenticate_user(email: str, password: str, db: Session) -> dict[str, str |
         raise HTTPException(status_code=400, detail="Неверный логин или пароль.")
 
 
-def join_user_token(refresh_token: str, db: Session) -> None:
+def join_user_token(user_id: int, refresh_token: str, db: Session) -> None:
     """Привязка токена к пользователю
 
     Args:
         refresh_token (str): refresh токен.
         db (_type_): Объект сессии БД.
     """
-    data = decode_token(refresh_token)
-    if db.scalar(select(UserTokenData).where(UserTokenData.user_id == data["sub"])):
+    now = datetime.now(UTC)
+    exp = now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    if db.scalar(select(UserTokenData).where(UserTokenData.user_id == user_id)):
         usertoken_object = db.scalar(
-            select(UserTokenData).where(UserTokenData.user_id == data["sub"])
+            select(UserTokenData).where(UserTokenData.user_id == user_id)
         )
         usertoken_object.token = refresh_token
         usertoken_object.created_at = datetime.now(UTC)
-        usertoken_object.expires_at = datetime.fromtimestamp(data["exp"])
+        usertoken_object.expires_at = datetime.fromtimestamp(exp)
     else:
         usertoken_object = UserTokenData(
             token=refresh_token,
             created_at=datetime.now(UTC),
-            expired_at=datetime.fromtimestamp(data["exp"]),
-            user_id=data["sub"])
+            expired_at=datetime.fromtimestamp(exp),
+            user_id=user_id)
         db.add(usertoken_object)
     db.commit()
 
 
 def delete_refresh_token(refresh_token: str, db: Session) -> None:
+    """Удаление refresh токена пользователя
+
+    Args:
+        refresh_token (str): Refresh token.
+        db (Session): Объект сессии БД.
+    """
     usertoken_object = db.scalar(select(UserTokenData).where(UserTokenData.token == refresh_token))
     if usertoken_object:
         db.delete(usertoken_object)

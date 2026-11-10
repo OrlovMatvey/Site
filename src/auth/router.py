@@ -109,6 +109,15 @@ def get_login_page(request: Request) -> Response:
 
 @router.get("/Logout")
 def logout(refresh_token: str = Cookie(None), db: Session = Depends(get_db)) -> RedirectResponse:
+    """Эндпоинт для выхода из аккаунта
+
+    Args:
+        refresh_token (str, optional): Refresh token из куки. Defaults to Cookie(None).
+        db (Session, optional): Объект сессии в бд. Defaults to Depends(get_db).
+
+    Returns:
+        RedirectResponse: Редирект на страницу регистрации
+    """
     delete_refresh_token(refresh_token, db)
     redirect_response = RedirectResponse(url="/", status_code=303)
     redirect_response.delete_cookie("access_token", path="/")

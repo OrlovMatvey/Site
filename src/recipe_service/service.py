@@ -6,7 +6,6 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.auth import UserData
-from src.security import decode_token
 
 from .models import CategoryData, IngredientData, RecipeData, RecipeIngredientData
 

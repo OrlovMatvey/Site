@@ -3,7 +3,9 @@ SECRET_KEY=EInoAJ3uquBciyfYq3miigQKMQrKhYIRHi1oIzW92Vy4KVEsEOJiSIguOajEv3Qz
 ALGORITHM=HS256 
 ACCESS_TOKEN_EXPIRE_MINUTES=30 
 REFRESH_TOKEN_EXPIRE_DAYS=7
-DB_URL="mssql+pyodbc://@localhost/database?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+DB_URL="mssql+pyodbc://@localhost/DataBase?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+MASTER_URL="mssql+pyodbc://@localhost/master?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes"
+DB_NAME = "DataBase"
 Структура пояснительной записки:
 1. Титульный лист
 2. Задание на курсовой проект
@@ -20,4 +22,4 @@ DB_URL="mssql+pyodbc://@localhost/database?driver=ODBC+Driver+18+for+SQL+Server&
     4.3 Техническое задание, 4.4 Руководство программиста 4.5 Руководство оператора,
     4.6 Пользовательские экраны, 4.7 Паспорт программы, 4.8 Текст программы.
     )
-Задание на УП: Программный продукт, реализованный в рамках КП1101, дополнить следующими функциями: Роли(Админ-пользователь), Реализация фильтрации и сортировки(поиск/фильтры), Формирование выходной документации в форматах docx-pdf-txt, расширение функционала в рамках темы.
+# Задание на УП: Программный продукт, реализованный в рамках КП1101, дополнить следующими функциями: Роли(Админ-пользователь), Реализация фильтрации и сортировки(поиск/фильтры), Формирование выходной документации в форматах docx-pdf-txt, расширение функционала в рамках темы.

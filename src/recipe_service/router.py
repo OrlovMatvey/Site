@@ -5,12 +5,7 @@ from sqlalchemy.orm import Session
 
 from src.auth import UserData
 from src.config import settings
-from src.dependencies import (
-    get_current_admin,
-    get_current_user,
-    get_db,
-    is_authenticated,
-)
+from src.dependencies import get_current_user, get_db
 
 from .schemas import RecipeModel
 from .service import add_new_recipe, get_profile_from_db, get_recipes_from_db
@@ -28,7 +23,7 @@ def get_index_page(
 
     Args:
         request (Request): Тело запроса
-        access_token (bool, optional): Access_token из зависимости. Defaults to Depends(is_authenticated).
+        current_user (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
         db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
 
     Returns:
@@ -50,7 +45,7 @@ def get_profile_page(
 
     Args:
         request (Request): Тело запроса
-        access_token (bool, optional): Access_token из зависимости. Defaults to Depends(is_authenticated).
+        current_user (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
         db (Session, optional): Объект сессии БД.. Defaults to Depends(get_db).
 
     Returns:
@@ -60,6 +55,7 @@ def get_profile_page(
     return settings.TEMPLATES.TemplateResponse(
         request=request, name="profile.html", context=context
     )
+
 
 @router.post("/Profile")
 def create_recipe(
@@ -71,7 +67,7 @@ def create_recipe(
 
     Args:
         recipe_data (RecipeModel, optional): Данные из формы. Defaults to Depends(RecipeModel.formBody).
-        access_token (bool, optional): Access_token из зависимости. Defaults to Depends(is_authenticated).
+        current_user (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
         db (Session, optional): Объект сессии БД.. Defaults to Depends(get_db).
 
     Returns:
