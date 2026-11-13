@@ -29,7 +29,7 @@ def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
 
     Args:
         request (Request): Тело запроса.
-        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
+        db (Session, optional): Объект сессии БД.
 
     Raises:
         HTTPException: Пользователь не авторизован
@@ -43,10 +43,10 @@ def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
     if access_token and decode_token(access_token):
         return access_token
     if refresh_token:
-        data = decode_token(refresh_token)
-        if data:
-            user_id = data["sub"]
-            db_token = db.scalar(select(UserTokenData).where(UserTokenData.user_id == data["sub"], UserTokenData.token == refresh_token))
+        token_data = decode_token(refresh_token)
+        if token_data:
+            user_id = token_data["sub"]
+            db_token = db.scalar(select(UserTokenData).where(UserTokenData.user_id == token_data["sub"], UserTokenData.token == refresh_token))
             if db_token:
                 new_access_token = create_access_token({"sub": user_id})
                 request.state.new_access_token = new_access_token
@@ -55,13 +55,17 @@ def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
     raise HTTPException(status_code=401, detail="Пользователь не авторизован")
 
 
-def get_current_user(request: Request, access_token: str = Depends(is_authenticated), db: Session = Depends(get_db)) -> CurrentUserModel:
+def get_current_user(
+    request: Request,
+    access_token: str = Depends(is_authenticated),
+    db: Session = Depends(get_db)
+) -> CurrentUserModel:
     """Зависимость для получения текущего пользователя
 
     Args:
         request (Request): Тело запроса.
-        access_token (str, optional): Access token из зависимости. Defaults to Depends(is_authenticated).
-        db (Session, optional): Объект сессии в БД. Defaults to Depends(get_db).
+        access_token (str, optional): Access token из зависимости.
+        db (Session, optional): Объект сессии в БД.
 
     Returns:
         UserData: Текущий пользователь
@@ -76,11 +80,13 @@ def get_current_user(request: Request, access_token: str = Depends(is_authentica
     return user_object
 
 
-def get_current_admin(user_object: CurrentUserModel = Depends(get_current_user)) -> bool:
+def get_current_admin(
+    user_object: CurrentUserModel = Depends(get_current_user)
+) -> bool:
     """Зависимость для проверки прав пользователя
 
     Args:
-        user_object (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
+        user_object (UserData, optional): Текущий юзер из зависимости.
 
     Raises:
         HTTPException: Не авторизован
@@ -94,18 +100,3 @@ def get_current_admin(user_object: CurrentUserModel = Depends(get_current_user))
     if not user_object.is_admin:
         raise HTTPException(403, detail="Недостаточно прав доступа")
     return user_object.is_admin
-
-
-def add_auth_context(request: Request) -> dict:
-    """Общий констекст для шаблонов
-
-    Args:
-        request (Request): Тело запроса
-
-    Returns:
-        dict: Словарь с контекстом
-    """
-    user = getattr(request.state, "user", None)
-    return {
-        "is_admin": getattr(user, "is_admin", False)
-    }

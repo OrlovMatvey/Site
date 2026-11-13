@@ -14,7 +14,7 @@ class UserData(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(40))
-    hash_password: Mapped[str]
+    hash_password: Mapped[str] = mapped_column()
     is_admin: Mapped[bool] = mapped_column(default=False)
 
 

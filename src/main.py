@@ -1,6 +1,6 @@
 """Главный модуль запуска приложения"""
 import uvicorn
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -17,9 +17,9 @@ from src.recipe_service import service_router
 
 app = FastAPI()
 
-app.add_exception_handler(general_exception_handler)
-app.add_exception_handler(auth_exception_handler)
-app.add_middleware(auto_set_refresh_cookies)
+app.add_exception_handler(HTTPException, general_exception_handler)
+app.add_exception_handler(401, auth_exception_handler)
+app.middleware("http")(auto_set_refresh_cookies)
 app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
 app.include_router(auth_router)
 app.include_router(service_router)
@@ -27,11 +27,11 @@ app.include_router(admin_router)
 
 
 @app.get("/")
-def main(request: Request, authenticated: bool = Depends(is_authenticated)) -> RedirectResponse:
+def main(access_token: bool = Depends(is_authenticated)) -> RedirectResponse:
     """Точка входа в приложение
 
     Args:
-        request (Request): Тело запроса
+        access_token (bool, optional): Access token из зависимости.
 
     Returns:
         RedirectResponse: Редирект на главную страницу

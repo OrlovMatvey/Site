@@ -52,10 +52,8 @@ def get_admin_dashboard_data(db: Session, table_name: str) -> dict:
 
 def delete_row_by_id(db: Session, table_name: str, row_id: int) -> bool:
     """Удаляет запись по ID из выбранной таблицы с использованием db.scalar"""
-    print(111)
     model = TABLES_MAP.get(table_name)
     if not model:
-        print(123)
         return False
 
     # Формируем явный SQL-запрос выборки по первичному ключу ID
@@ -64,7 +62,6 @@ def delete_row_by_id(db: Session, table_name: str, row_id: int) -> bool:
     # Получаем объект через db.scalar
     obj = db.scalar(stmt)
     if not obj:
-        print(321)
         return False
 
     db.delete(obj)

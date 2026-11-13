@@ -1,12 +1,29 @@
+from datetime import timedelta
+
 from fastapi import HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
 
 from src.config import settings
-from src.dependencies import add_auth_context
 
-TEMPLATES = Jinja2Templates(directory=settings.TEMPLATES_DIR, context_processors=[add_auth_context])
+
+def add_auth_context(request: Request) -> dict:
+    """Общий констекст для шаблонов
+
+    Args:
+        request (Request): Тело запроса
+
+    Returns:
+        dict: Словарь с контекстом
+    """
+    user = getattr(request.state, "user", None)
+    return {"is_admin": getattr(user, "is_admin", False)}
+
+
+TEMPLATES = Jinja2Templates(
+    directory=settings.TEMPLATES_DIR, context_processors=[add_auth_context]
+)
 
 
 class CurrentUserModel(BaseModel):
@@ -36,12 +53,15 @@ async def auto_set_refresh_cookies(request: Request, call_next) -> Response:
             key="access_token",
             value=new_access_token,
             httponly=True,
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES*settings.SECONDS_IN_MINUTE
+            max_age=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
     return response
 
 
-def auth_exception_handler(request: Request, exc: HTTPException) -> RedirectResponse:
+def auth_exception_handler(
+    request: Request,
+    exc: HTTPException
+) -> RedirectResponse:
     """Обработчик для исключения с кодом 401
 
     Args:
@@ -54,7 +74,10 @@ def auth_exception_handler(request: Request, exc: HTTPException) -> RedirectResp
     return RedirectResponse(url="/Auth/SignUp", status_code=303)
 
 
-def general_exception_handler(request: Request, exc: HTTPException) -> HTMLResponse:
+def general_exception_handler(
+    request: Request,
+    exc: HTTPException
+) -> HTMLResponse:
     """Общий обработчик для исключений
 
     Args:
@@ -65,4 +88,6 @@ def general_exception_handler(request: Request, exc: HTTPException) -> HTMLRespo
         HTMLResponse: Шаблон с выводом ошибки.
     """
     context = {"status_code": exc.status_code, "detail": exc.detail}
-    return TEMPLATES.TemplateResponse(request=request, name="error.html", context=context)
+    return TEMPLATES.TemplateResponse(
+        request=request, name="error.html", context=context
+    )

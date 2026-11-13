@@ -1,24 +1,22 @@
 """Модуль создания таблиц в БД"""
 from sqlalchemy import create_engine, text
 
-from src.auth import UserData, UserTokenData
+import src.auth
+import src.recipe_service
 from src.config import settings
 from src.database import Base, engine
-from src.recipe_service import (
-    CategoryData,
-    CommentData,
-    FavoriteRecipeData,
-    IngredientData,
-    RecipeData,
-)
 
 
 def init_database():
     """Функция создания БД и таблиц"""
 
-    master_engine = create_engine(settings.MASTER_URL, isolation_level="AUTOCOMMIT")
+    master_engine = create_engine(
+        settings.MASTER_URL, isolation_level="AUTOCOMMIT"
+    )
 
-    check_query = text(f"SELECT database_id FROM sys.databases WHERE name = '{settings.DB_NAME}'")
+    check_query = text(
+        f"SELECT database_id FROM sys.databases WHERE name = '{settings.DB_NAME}'"
+    )
 
     with master_engine.connect() as conn:
         db_exists = conn.scalar(check_query)

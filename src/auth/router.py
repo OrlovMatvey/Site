@@ -21,8 +21,8 @@ def register(
     """Эндпоинт для регистрации пользователя
 
     Args:
-        request (AuthenticateModel, optional): Тело запроса. Валидация Depends(AuthenticateModel.formBody).
-        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
+        request (AuthenticateModel, optional): Тело запроса.
+        db (Session, optional): Объект сессии БД.
 
     Returns:
         RedirectResponse: Редирект на главную страницу
@@ -55,7 +55,7 @@ def login(
 
     Args:
         request (AuthenticateModel): Тело запроса.
-        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
+        db (Session, optional): Объект сессии БД.
 
     Returns:
         RedirectResponse: Редирект на главную страницу.
@@ -112,8 +112,8 @@ def logout(refresh_token: str = Cookie(None), db: Session = Depends(get_db)) -> 
     """Эндпоинт для выхода из аккаунта
 
     Args:
-        refresh_token (str, optional): Refresh token из куки. Defaults to Cookie(None).
-        db (Session, optional): Объект сессии в бд. Defaults to Depends(get_db).
+        refresh_token (str, optional): Refresh token из куки.
+        db (Session, optional): Объект сессии в бд.
 
     Returns:
         RedirectResponse: Редирект на страницу регистрации

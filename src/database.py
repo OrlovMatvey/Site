@@ -1,15 +1,15 @@
 """Модуль для инициализации базы данных"""
 from typing import Any
 
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 
 from src.config import settings
 
 engine = create_engine(settings.DB_URL, echo=True)
 
 
-class Base(DeclarativeBase):
+class Base(MappedAsDataclass, DeclarativeBase):
     """Базовый класс для моделей"""
     @classmethod
     def get_table_fields(cls) -> list[str]:

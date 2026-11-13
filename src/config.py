@@ -23,4 +23,5 @@ class Settings(BaseSettings):
         env_file=DOTENV/".env", arbitrary_types_allowed=True
     )
 
+
 settings = Settings()

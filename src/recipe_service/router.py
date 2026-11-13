@@ -22,9 +22,8 @@ def get_index_page(
 
     Args:
         request (Request): Тело запроса
-        current_user (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
-        db (Session, optional): Объект сессии БД. Defaults to Depends(get_db).
-
+        current_user (UserData, optional): Текущий юзер из зависимости.
+        db (Session, optional): Объект сессии БД.
     Returns:
         HTMLResponse: Возвращает шаблон главной страницы
     """
@@ -44,8 +43,8 @@ def get_profile_page(
 
     Args:
         request (Request): Тело запроса
-        current_user (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
-        db (Session, optional): Объект сессии БД.. Defaults to Depends(get_db).
+        current_user (UserData, optional): Текущий юзер из зависимости.
+        db (Session, optional): Объект сессии БД.
 
     Returns:
         HTMLResponse: Возвращает шаблон страницы профиля
@@ -65,9 +64,9 @@ def create_recipe(
     """Эндпоинт для создания нового рецепта
 
     Args:
-        recipe_data (RecipeModel, optional): Данные из формы. Defaults to Depends(RecipeModel.formBody).
-        current_user (UserData, optional): Текущий юзер из зависимости. Defaults to Depends(get_current_user).
-        db (Session, optional): Объект сессии БД.. Defaults to Depends(get_db).
+        recipe_data (RecipeModel, optional): Данные из формы.
+        current_user (UserData, optional): Текущий юзер из зависимости.
+        db (Session, optional): Объект сессии БД.
 
     Returns:
         Response: Пустой ответ 204

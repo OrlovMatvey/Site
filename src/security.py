@@ -32,7 +32,7 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
 
 
-def create_access_token(data: dict) -> str:
+def create_access_token(token_data: dict) -> str:
     """Создание access jwt токена
 
     Args:
@@ -42,14 +42,18 @@ def create_access_token(data: dict) -> str:
         str: Кодированный токен
     """
     from src.config import settings
-    data = data.copy()
-    expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    data["exp"] = expire
-    token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    token_data = token_data.copy()
+    expire = datetime.now(UTC) + timedelta(
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+    token_data["exp"] = expire
+    token = jwt.encode(
+        token_data, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
     return token
 
 
-def create_refresh_token(data: dict) -> str:
+def create_refresh_token(token_data: dict) -> str:
     """Создание refresh jwt токена
 
     Args:
@@ -59,10 +63,14 @@ def create_refresh_token(data: dict) -> str:
         str: Кодированный токен
     """
     from src.config import settings
-    data = data.copy()
-    expire = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    data["exp"] = expire
-    token = jwt.encode(data, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    token_data = token_data.copy()
+    expire = datetime.now(UTC) + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+    )
+    token_data["exp"] = expire
+    token = jwt.encode(
+        token_data, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
     return token
 
 
@@ -76,5 +84,7 @@ def decode_token(token: str) -> dict:
         dict: Информация из тела токена
     """
     from src.config import settings
-    data = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
-    return data
+    token_data = jwt.decode(
+        token, settings.SECRET_KEY, algorithms=settings.ALGORITHM
+    )
+    return token_data

@@ -45,8 +45,8 @@ def create_new_user(username: str, email: str, password: str, db: Session) -> di
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
-            "access_expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES*settings.SECONDS_IN_MINUTE,
-            "refresh_expires_in": settings.REFRESH_TOKEN_EXPIRE_DAYS*settings.SECONDS_IN_DAY,
+            "access_expires_in": timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+            "refresh_expires_in": timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
             "token_type": "bearer"
         }
 
