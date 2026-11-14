@@ -24,7 +24,10 @@ def get_db() -> Iterator[Session]:
         db.close()
 
 
-def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
+def is_authenticated(
+    request: Request,
+    db: Session = Depends(get_db)
+) -> str:
     """Зависимость для проверки наличия токенов
 
     Args:
@@ -46,7 +49,10 @@ def is_authenticated(request: Request, db: Session = Depends(get_db)) -> str:
         token_data = decode_token(refresh_token)
         if token_data:
             user_id = token_data["sub"]
-            db_token = db.scalar(select(UserTokenData).where(UserTokenData.user_id == token_data["sub"], UserTokenData.token == refresh_token))
+            db_token = db.scalar(select(UserTokenData).where(
+                UserTokenData.user_id == token_data["sub"],
+                UserTokenData.token == refresh_token
+            ))
             if db_token:
                 new_access_token = create_access_token({"sub": user_id})
                 request.state.new_access_token = new_access_token
@@ -68,7 +74,7 @@ def get_current_user(
         db (Session, optional): Объект сессии в БД.
 
     Returns:
-        UserData: Текущий пользователь
+        CurrentUserModel: Текущий пользователь
     """
     from src.auth import UserData
     user_id = decode_token(access_token)["sub"]
@@ -86,7 +92,7 @@ def get_current_admin(
     """Зависимость для проверки прав пользователя
 
     Args:
-        user_object (UserData, optional): Текущий юзер из зависимости.
+        user_object (CurrentUserModel, optional): Текущий юзер из зависимости.
 
     Raises:
         HTTPException: Не авторизован
@@ -96,7 +102,7 @@ def get_current_admin(
         bool: Является ли юзер админом(True/False)
     """
     if not user_object:
-        raise HTTPException(status_code=401, detail="Пользователь не авторизован")
+        raise HTTPException(status_code=401, detail="Не авторизован")
     if not user_object.is_admin:
         raise HTTPException(403, detail="Недостаточно прав доступа")
     return user_object.is_admin

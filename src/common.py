@@ -1,4 +1,6 @@
+"""Модуль общих вспомогательных компонентов приложения"""
 from datetime import timedelta
+from typing import Any
 
 from fastapi import HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -8,14 +10,14 @@ from pydantic import BaseModel, EmailStr
 from src.config import settings
 
 
-def add_auth_context(request: Request) -> dict:
+def add_auth_context(request: Request) -> dict[str, Any]:
     """Общий констекст для шаблонов
 
     Args:
-        request (Request): Тело запроса
+        request (Request): Тело запроса.
 
     Returns:
-        dict: Словарь с контекстом
+        dict[str, Any]: Словарь с контекстом.
     """
     user = getattr(request.state, "user", None)
     return {"is_admin": getattr(user, "is_admin", False)}
@@ -53,7 +55,9 @@ async def auto_set_refresh_cookies(request: Request, call_next) -> Response:
             key="access_token",
             value=new_access_token,
             httponly=True,
-            max_age=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            max_age=int(timedelta(
+                minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+            ).total_seconds())
         )
     return response
 
@@ -65,8 +69,8 @@ def auth_exception_handler(
     """Обработчик для исключения с кодом 401
 
     Args:
-        request (Request): Тело запроса
-        exc (HTTPException): Исключение
+        request (Request): Тело запроса.
+        exc (HTTPException): Исключение.
 
     Returns:
         RedirectResponse: Редирект на страницу регистрации

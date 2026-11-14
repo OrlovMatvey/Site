@@ -1,5 +1,5 @@
 """Модуль ORM-моделей БД для сервиса Рецептов"""
-from sqlalchemy import JSON, Float, ForeignKey, LargeBinary, String
+from sqlalchemy import Float, ForeignKey, LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
@@ -12,7 +12,7 @@ class RecipeData(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50))
     category: Mapped[int] = mapped_column(ForeignKey('CategoryData.id'))
-    body: Mapped[dict] = mapped_column(JSON, default=dict)
+    body: Mapped[str] = mapped_column(String(500))
     image: Mapped[bytes] = mapped_column(LargeBinary)
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
     count_likes: Mapped[int] = mapped_column(nullable=True)
@@ -22,6 +22,9 @@ class RecipeData(Base):
         "RecipeIngredientData",
         cascade="all, delete-orphan"
     )
+
+    # Можно добавить поля с фильтрацией, сортировкой и стратегией загрузки с
+    # помощью relationship
 
 
 class CommentData(Base):

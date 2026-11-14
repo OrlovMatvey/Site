@@ -8,21 +8,19 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body class="main-layout">
-        <!-- Верхнее навигационное меню -->
-    <nav class="navbar">
+    <header class="navbar">
         <div class="navbar-container">
             <a href="/Service/Main" class="navbar-logo">🍽️ Кулинар</a>
             <ul class="navbar-menu">
                 <li><a href="/Service/Main" class="{% if request.url.path == '/Service/Main' %}active{% endif %}">Главная</a></li>
                 <li><a href="/Service/Profile" class="{% if request.url.path == '/Service/Profile' %}active{% endif %}">Мой профиль</a></li>
                 {% if  is_admin %}
-                <li><a href="/Admin/" class="{% if request.url.path == '/Service/Admin' %}active{% endif %}">Админ</a></li>
+                    <li><a href="/Admin/" class="{% if request.url.path == '/Admin/' %}active{% endif %}">Админ</a></li>
                 {% endif %}
                 <li><a href="/Auth/Logout">Выйти</a></li>
             </ul>
         </div>
-    </nav>
-
+    </header>
     <main>
         {% block content %}
         {% endblock %}

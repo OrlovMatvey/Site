@@ -1,5 +1,6 @@
 """Модуль для функций криптографии"""
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from jose import jwt
 from pwdlib import PasswordHash
@@ -32,14 +33,14 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return pwd_context.verify(password, hashed_password)
 
 
-def create_access_token(token_data: dict) -> str:
+def create_access_token(token_data: dict[str, Any]) -> str:
     """Создание access jwt токена
 
     Args:
-        data (dict): Информация для тела токена
+        token_data (dict[str, Any]): Информация для тела токена.
 
     Returns:
-        str: Кодированный токен
+        str: Готовый access токен.
     """
     from src.config import settings
     token_data = token_data.copy()
@@ -53,14 +54,14 @@ def create_access_token(token_data: dict) -> str:
     return token
 
 
-def create_refresh_token(token_data: dict) -> str:
+def create_refresh_token(token_data: dict[str, Any]) -> str:
     """Создание refresh jwt токена
 
     Args:
-        data (dict): Информация для тела токена
+        token_data (dict[str, Any]): Информация для тела токена.
 
     Returns:
-        str: Кодированный токен
+        str: Готовый refresh токен.
     """
     from src.config import settings
     token_data = token_data.copy()

@@ -8,7 +8,10 @@ from src.dependencies import get_current_admin, get_db
 
 from .service import delete_row_by_id, get_admin_dashboard_data, update_row_by_id
 
-router = APIRouter(prefix="/Admin", tags=["AdminProcess"], dependencies=[Depends(get_current_admin)])
+router = APIRouter(
+    prefix="/Admin", tags=["AdminProcess"],
+    dependencies=[Depends(get_current_admin)]
+)
 
 
 @router.get("/")
@@ -34,7 +37,7 @@ def delete_table_row(table: str, id: int, db: Session = Depends(get_db)):
     """Универсальное удаление записи из любой таблицы"""
     success = delete_row_by_id(db, table_name=table, row_id=id)
     if not success:
-        raise HTTPException(status_code=404, detail="Запись не найдена или защищена")
+        raise HTTPException(status_code=404, detail="Запись не найдена")
     return {"status": "success", "message": "Запись успешно удалена"}
 
 
@@ -45,5 +48,5 @@ async def update_table_row(table: str, id: int, request: Request, db: Session = 
     form_data = await request.json() 
     success = update_row_by_id(db, table_name=table, row_id=id, data=form_data)
     if not success:
-        raise HTTPException(status_code=400, detail="Не удалось обновить запись")
+        raise HTTPException(status_code=400, detail="Не удалось изменить")
     return {"status": "success", "message": "Запись успешно обновлена"}

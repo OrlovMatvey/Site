@@ -1,12 +1,12 @@
 """Модуль эндпоинтов для сервиса Рецептов"""
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 
 from src.common import TEMPLATES, CurrentUserModel
 from src.dependencies import get_current_user, get_db
 
-from .schemas import RecipeModel
+from .schemas import NewRecipeModel
 from .service import add_new_recipe, get_profile_from_db, get_recipes_from_db
 
 router = APIRouter(prefix="/Service", tags=["BusinessProcess"])
@@ -21,8 +21,8 @@ def get_index_page(
     """Эндпоинт для получения главной страницы
 
     Args:
-        request (Request): Тело запроса
-        current_user (UserData, optional): Текущий юзер из зависимости.
+        request (Request): Тело запроса.
+        current_user (CurrentUserModel, optional): Текущий юзер из зависимости.
         db (Session, optional): Объект сессии БД.
     Returns:
         HTMLResponse: Возвращает шаблон главной страницы
@@ -42,8 +42,8 @@ def get_profile_page(
     """Эндпоинт для получения страницы профиля
 
     Args:
-        request (Request): Тело запроса
-        current_user (UserData, optional): Текущий юзер из зависимости.
+        request (Request): Тело запроса.
+        current_user (CurrentUserModel, optional): Текущий юзер из зависимости.
         db (Session, optional): Объект сессии БД.
 
     Returns:
@@ -57,19 +57,19 @@ def get_profile_page(
 
 @router.post("/Profile")
 def create_recipe(
-    recipe_data: RecipeModel = Depends(RecipeModel.formBody),
+    recipe_data: NewRecipeModel = Depends(NewRecipeModel.formBody),
     current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
-) -> Response:
+) -> RedirectResponse:
     """Эндпоинт для создания нового рецепта
 
     Args:
-        recipe_data (RecipeModel, optional): Данные из формы.
-        current_user (UserData, optional): Текущий юзер из зависимости.
+        recipe_data (NewRecipeModel, optional): Данные из формы.
+        current_user (CurrentUserModel, optional): Текущий юзер из зависимости.
         db (Session, optional): Объект сессии БД.
 
     Returns:
-        Response: Пустой ответ 204
+        RedirectResponse: Перезагрузка страницы(Редирект)
     """
     add_new_recipe(
         current_user,

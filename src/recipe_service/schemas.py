@@ -5,7 +5,7 @@ from fastapi import File, Form, UploadFile
 from pydantic import BaseModel
 
 
-class RecipeModel(BaseModel):
+class NewRecipeModel(BaseModel):
     """Pydantic-модель для валидации запроса на создание нового рецепта
 
     Args:

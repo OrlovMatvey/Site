@@ -7,7 +7,7 @@ from src.common import TEMPLATES
 from src.dependencies import get_db
 from src.security import decode_token
 
-from .schemas import LoginModel, RegisterModel
+from .schemas import LoginModel, RegisterModel, TokenCookiesModel
 from .service import authenticate_user, create_new_user, delete_refresh_token
 
 router = APIRouter(prefix="/Auth", tags=['AccessControl'])
@@ -21,41 +21,45 @@ def register(
     """Эндпоинт для регистрации пользователя
 
     Args:
-        request (AuthenticateModel, optional): Тело запроса.
-        db (Session, optional): Объект сессии БД.
+        request (RegisterModel, optional): Тело запроса с валидацией.
+        db (Session, optional): Объект сессии БД из зависимости.
 
     Returns:
         RedirectResponse: Редирект на главную страницу
     """
-    coockie_data: dict = create_new_user(
+    coockie_data: TokenCookiesModel = create_new_user(
         request.username, request.email, request.password, db
     )
     redirect_response = RedirectResponse(url="/", status_code=303)
     redirect_response.set_cookie(
         key="access_token",
-        value=coockie_data["access_token"],
+        value=coockie_data.access_token,
         httponly=True,
-        max_age=coockie_data["access_expires_in"]
+        samesite="lax",
+        path="/",
+        max_age=coockie_data.access_token
     )
     redirect_response.set_cookie(
         key="refresh_token",
-        value=coockie_data["refresh_token"],
+        value=coockie_data.refresh_token,
         httponly=True,
-        max_age=coockie_data["refresh_expires_in"]
+        samesite="lax",
+        path="/",
+        max_age=coockie_data.refresh_expires_in
     )
     return redirect_response
 
 
 @router.post("/SignIn")
 def login(
-    request: LoginModel = Depends(LoginModel.formBody), 
+    request: LoginModel = Depends(LoginModel.formBody),
     db: Session = Depends(get_db)
 ) -> RedirectResponse:
     """Эндпоинт для авторизации пользователя
 
     Args:
-        request (AuthenticateModel): Тело запроса.
-        db (Session, optional): Объект сессии БД.
+        request (LoginModel, optional): Тело запроса с валидацией.
+        db (Session, optional): Объект сессии БД из зависимости.
 
     Returns:
         RedirectResponse: Редирект на главную страницу.
@@ -65,11 +69,17 @@ def login(
     redirect_response.set_cookie(
         key="access_token",
         value=coockie_data["access_token"],
+        httponly=True,
+        samesite="lax",
+        path="/",
         max_age=coockie_data["access_expires_in"]
     )
     redirect_response.set_cookie(
         key="refresh_token",
         value=coockie_data["refresh_token"],
+        httponly=True,
+        samesite="lax",
+        path="/",
         max_age=coockie_data["refresh_expires_in"]
     )
     return redirect_response
@@ -108,7 +118,10 @@ def get_login_page(request: Request) -> Response:
 
 
 @router.get("/Logout")
-def logout(refresh_token: str = Cookie(None), db: Session = Depends(get_db)) -> RedirectResponse:
+def logout(
+    refresh_token: str = Cookie(None),
+    db: Session = Depends(get_db)
+) -> RedirectResponse:
     """Эндпоинт для выхода из аккаунта
 
     Args:
@@ -116,7 +129,7 @@ def logout(refresh_token: str = Cookie(None), db: Session = Depends(get_db)) -> 
         db (Session, optional): Объект сессии в бд.
 
     Returns:
-        RedirectResponse: Редирект на страницу регистрации
+        RedirectResponse: Редирект на страницу регистрации.
     """
     delete_refresh_token(refresh_token, db)
     redirect_response = RedirectResponse(url="/", status_code=303)

@@ -41,6 +41,10 @@ def get_admin_dashboard_data(db: Session, table_name: str) -> dict:
         "tokens": "Токены пользователей",
         "recipes": "Рецепты",
         "ingredients": "Ингредиенты",
+        "recipe_ingredients": "Ингредиенты рецептов",
+        "favorites": "Избранные рецепты",
+        "categories": "Категории",
+        "comments": "Комментарии"
     }
 
     return {

@@ -448,7 +448,6 @@ body.main-layout {
         .db-table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
             font-size: 15px;
         }
 
@@ -660,6 +659,7 @@ body.main-layout {
     color: #ffffff;
     text-decoration: none;
     padding: 14px;
+    margin: 10px 0px;
     font-size: 16px;
     font-weight: bold;
     border-radius: 8px;

@@ -9,17 +9,22 @@ class RegisterModel(BaseModel):
     """Pydantic-модель для валидации запроса на регистрацию
 
     Args:
-        BaseModel (_type_): Базовый класс для Pydantic-моделей
+        BaseModel (_type_): Базовый класс для Pydantic-моделей.
 
     Returns:
-        _type_: Экземпляр модели
+        _type_: Экземпляр модели.
     """
     username: str
     email: str
     password: str
 
     @classmethod
-    def formBody(cls, username: str = Form(...), email: str = Form(...), password: str = Form(...)) -> Self:
+    def formBody(
+        cls,
+        username: str = Form(...),
+        email: str = Form(...),
+        password: str = Form(...)
+    ) -> Self:
         return cls(username=username, email=email, password=password)
 
 
@@ -27,14 +32,30 @@ class LoginModel(BaseModel):
     """Pydantic-модель для валидации запроса на авторизацию
 
     Args:
-        BaseModel (_type_): Базовый класс для Pydantic-моделей
+        BaseModel (_type_): Базовый класс для Pydantic-моделей.
 
     Returns:
-        _type_: Экземпляр модели
+        _type_: Экземпляр модели.
     """
     email: str
     password: str
 
     @classmethod
-    def formBody(cls, email: str = Form(...), password: str = Form(...)) -> Self:
+    def formBody(
+        cls,
+        email: str = Form(...),
+        password: str = Form(...)
+    ) -> Self:
         return cls(email=email, password=password)
+
+
+class TokenCookiesModel(BaseModel):
+    """Pydantic-модель для cookie токенов
+
+    Args:
+        BaseModel (_type_): Базовый класс для Pydantic-моделей.
+    """
+    access_token: str
+    refresh_token: str
+    access_expires_in: int
+    refresh_expires_in: int
