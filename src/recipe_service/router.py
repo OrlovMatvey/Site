@@ -12,10 +12,9 @@ from .service import add_new_recipe, get_profile_from_db, get_recipes_from_db
 router = APIRouter(prefix="/Service", tags=["BusinessProcess"])
 
 
-@router.get("/Main")
+@router.get("/Main", dependencies=[Depends(get_current_user)])
 def get_index_page(
     request: Request,
-    current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
     """Эндпоинт для получения главной страницы
@@ -71,11 +70,5 @@ def create_recipe(
     Returns:
         RedirectResponse: Перезагрузка страницы(Редирект)
     """
-    add_new_recipe(
-        current_user,
-        recipe_data.title, recipe_data.category,
-        recipe_data.body, recipe_data.ingredient_ids,
-        recipe_data.ingredient_volumes, recipe_data.ingredient_units,
-        recipe_data.image, db
-        )
+    add_new_recipe(current_user, recipe_data, db)
     return RedirectResponse(url="/Service/Profile", status_code=303)

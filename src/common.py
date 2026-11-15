@@ -6,6 +6,7 @@ from fastapi import HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
+from starlette.exceptions import HTTPException as StarletteException
 
 from src.config import settings
 
@@ -80,7 +81,7 @@ def auth_exception_handler(
 
 def general_exception_handler(
     request: Request,
-    exc: HTTPException
+    exc: StarletteException
 ) -> HTMLResponse:
     """Общий обработчик для исключений
 

@@ -22,21 +22,20 @@
         </div>
 
         <div class="recipes-grid">
-            {% for recipe in recipes_data %}
-            
+            {% for recipe in recipes_data %}   
             <article class="recipe-card">
                 <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
                 <div class="recipe-info">
                     <h3 class="recipe-title">{{ recipe.title }}</h3>
-                    <p class="recipe-description">{{ recipe.body }}.</p>
+                    <p class="recipe-description">{{ recipe.body[0:20] }}...</p>
                     <div class="recipe-meta">
-                        <span>⏱️ 30 мин</span>
+                        <span>🏷️Категория: {{ recipe.category }}</span>
                         <span>✍️ Редактировать</span>
                     </div>
                 </div>
             </article>
             {% else %}
-            <!-- Этот блок выполнится на автомате, если список recipes_data пуст -->
+            <!-- Если список recipes_data пуст -->
             <div class="no-recipes-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6c757d;">
                 <p>Вы еще не добавили свои рецепты!</p>
             </div>

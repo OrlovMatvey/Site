@@ -13,92 +13,41 @@ from src.recipe_service import (
 )
 
 TABLES_MAP = {
-    "users": UserData,
-    "tokens": UserTokenData,
-    "recipes": RecipeData,
-    "ingredients": IngredientData,
-    "recipe_ingredients": RecipeIngredientData,
-    "favorites": FavoriteRecipeData,
-    "categories": CategoryData,
-    "comments": CommentData
+    "User": UserData,
+    "UserToken": UserTokenData,
+    "Recipe": RecipeData,
+    "Ingredient": IngredientData,
+    "RecipeIngredient": RecipeIngredientData,
+    "FavoriteRecipe": FavoriteRecipeData,
+    "Category": CategoryData,
+    "Comment": CommentData
 }
 
 
-def get_admin_dashboard_data(db: Session, table_name: str) -> dict:
-    """Динамически извлекает поля и строки для любой таблицы БД"""
-    model = TABLES_MAP.get(table_name)
-
-    if not model:
-        return {"fields": [], "rows": [], "verbose_name": "Неизвестная таблица"}
-
-    # Интимная магия: используем ваши методы из класса Base!
-    fields = model.get_table_fields()
-    rows = db.scalars(select(model)).all()
-
-    # Человеческое название для заголовка на странице
-    verbose_names = {
-        "users": "Пользователи",
-        "tokens": "Токены пользователей",
-        "recipes": "Рецепты",
-        "ingredients": "Ингредиенты",
-        "recipe_ingredients": "Ингредиенты рецептов",
-        "favorites": "Избранные рецепты",
-        "categories": "Категории",
-        "comments": "Комментарии"
-    }
-
-    return {
-        "fields": fields,
-        "rows": rows,
-        "verbose_name": verbose_names.get(table_name, table_name.capitalize())
-    }
+def get_table_data_from_db(table_name: str, db: Session) -> dict[str, list]:
+    record_dicts: list[dict] = []
+    table_model = TABLES_MAP.get(table_name)
+    if not table_model:
+        return {"fields": [], "records": []}
+    table_fields = table_model.get_table_fields()
+    record_objects = db.scalars(select(table_model)).all()
+    for record_oject in record_objects:
+        record_dicts.append(record_oject.get_dict())
+    return {"fields": table_fields, "records": record_dicts}
 
 
-def delete_row_by_id(db: Session, table_name: str, row_id: int) -> bool:
-    """Удаляет запись по ID из выбранной таблицы с использованием db.scalar"""
-    model = TABLES_MAP.get(table_name)
-    if not model:
+def delete_record_by_id(table_name: str, record_id: int, db: Session) -> bool:
+    table_model = TABLES_MAP.get(table_name)
+    if not table_model:
         return False
-
-    # Формируем явный SQL-запрос выборки по первичному ключу ID
-    stmt = select(model).where(model.id == row_id)
-
-    # Получаем объект через db.scalar
-    obj = db.scalar(stmt)
-    if not obj:
+    record_object = db.scalar(select(table_model).where(table_model.id == record_id))
+    if not record_object:
         return False
-
-    db.delete(obj)
+    db.delete(record_object)
     db.commit()
     return True
 
 
-def update_row_by_id(db: Session, table_name: str, row_id: int, data: dict) -> bool:
-    """Динамически обновляет запись с использованием db.scalar и select"""
-    model = TABLES_MAP.get(table_name)
-    if not model:
-        return False
-
-    # Формируем SQL-запрос выборки объекта для изменения
-    stmt = select(model).where(model.id == row_id)
-
-    # Извлекаем объект из базы данных
-    obj = db.scalar(stmt)
-    if not obj:
-        return False
-
-    # Динамически обновляем атрибуты модели на основе пришедшего JSON
-    for key, value in data.items():
-        if key != "id" and hasattr(obj, key):
-            # Проверяем, если значение является строкой, но само поле в БД — булевое
-            # (или если мы просто хотим безопасно распарсить "True"/"Да")
-            if isinstance(value, str):
-                cleaned_value = value.strip().lower()
-                if cleaned_value in ("true", "да", "1"):
-                    value = True
-                elif cleaned_value in ("false", "нет", "0"):
-                    value = False
-            setattr(obj, key, value)
-
-    db.commit()
-    return True
+def update_record_by_id(table_name: str, record_id: int, db: Session) -> bool:
+    pass
+    # Сделать функционал обновления записи

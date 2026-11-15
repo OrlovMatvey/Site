@@ -23,6 +23,8 @@ class RecipeData(Base):
         cascade="all, delete-orphan"
     )
 
+    category_obj: Mapped["CategoryData"] = relationship("CategoryData", lazy="joined")
+
     # Можно добавить поля с фильтрацией, сортировкой и стратегией загрузки с
     # помощью relationship
 
@@ -52,6 +54,11 @@ class IngredientData(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[int] = mapped_column(String(50))
+
+    recipes: Mapped[list["RecipeIngredientData"]] = relationship(
+        "RecipeIngredientData",
+        cascade="all, delete-orphan"
+    )
 
 
 class CategoryData(Base):

@@ -1,52 +1,47 @@
 {% extends "header.html" %}
 {% block title %}Админ-панель{% endblock %}
+
 {% block content %}
-<div class="content-container">
-    
+<div class="content-container">  
     <div class="page-header">
-        <h1>Панель управления: {{ title_table }}</h1>
+        <h1>Панель управления: {{ active_table }}</h1>
     </div>
 
     <div class="admin-dashboard">
-        
-        <!-- Боковая панель: переключение таблиц через GET-параметры -->
         <aside class="admin-sidebar">
             <ul class="sidebar-menu">
                 <li>
-                    <a href="/Admin?table=users" class="{% if active_table == 'users' %}active{% endif %}">👤 Пользователи</a>
+                    <a href="/Admin?table=User" class="{% if active_table == 'User' %}active{% endif %}">👤 Пользователи</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=tokens" class="{% if active_table == 'tokens' %}active{% endif %}">🔑 Токены пользователей</a>
+                    <a href="/Admin?table=UserToken" class="{% if active_table == 'UserToken' %}active{% endif %}">🔑 Токены пользователей</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=recipes" class="{% if active_table == 'recipes' %}active{% endif %}">🍕 Рецепты</a>
+                    <a href="/Admin?table=Recipe" class="{% if active_table == 'Recipe' %}active{% endif %}">🍕 Рецепты</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=ingredients" class="{% if active_table == 'ingredients' %}active{% endif %}">🥕 Ингредиенты</a>
+                    <a href="/Admin?table=Ingredient" class="{% if active_table == 'Ingredient' %}active{% endif %}">🥕 Ингредиенты</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=recipe_ingredients" class="{% if active_table == 'recipe_ingredients' %}active{% endif %}">📜 Ингредиенты рецептов</a>
+                    <a href="/Admin?table=RecipeIngredient" class="{% if active_table == 'RecipeIngredient' %}active{% endif %}">📜 Ингредиенты рецептов</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=comments" class="{% if active_table == 'comments' %}active{% endif %}">💬 Комментарии</a>
+                    <a href="/Admin?table=Comment" class="{% if active_table == 'Comment' %}active{% endif %}">💬 Комментарии</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=categories" class="{% if active_table == 'categories' %}active{% endif %}">🏷️ Категории</a>
+                    <a href="/Admin?table=Category" class="{% if active_table == 'Category' %}active{% endif %}">🏷️ Категории</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=favorites" class="{% if active_table == 'favorites' %}active{% endif %}">⭐ Избранные рецепты</a>
+                    <a href="/Admin?table=FavoriteRecipe" class="{% if active_table == 'FavoriteRecipe' %}active{% endif %}">⭐ Избранные рецепты</a>
                 </li>
             </ul>
         </aside>
 
-        <!-- Контентная область -->
         <section class="admin-content">          
-
             <div class="db-table-container">
                 <table class="db-table" style="table-layout: auto; width: 100%;">
                     <thead>
                         <tr>
-                            <!-- Динамически выводим заголовки столбцов -->
                             {% for field in fields %}
                                 <th>{{ field.upper() }}</th>
                             {% endfor %}
@@ -54,32 +49,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Перебираем строки из базы данных -->
-                        {% for row in rows %}
+                        {% for record in records %}
                             <tr>
-                                {% set row_dict = row.get_dict() %}
                                 {% for field in fields %}
-                                    <!-- Защита интерфейса: max-width, overflow и text-overflow прячут байты в "..." -->
-                                    <td style="text-align: center; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ row_dict[field] }}">
-                                        
-                                        <!-- Сначала проверяем, является ли значение СТРОГО булевым типом -->
-                                        {% if row_dict[field] is boolean %}
-                                            {% if row_dict[field] == True %}
+                                    <td style="text-align: center; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        {% if record[field] is boolean %}
+                                            {% if record[field] == True %}
                                                 <span class="badge badge-admin" style="background: #28a745; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 16px;">Да</span>
                                             {% else %}
-                                                <span style="color: #b32727; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 16px;">Нет</span>
+                                                <span class="badge badge-admin" style="background: #b32727; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 16px;">Нет</span>
                                             {% endif %}
                                         {% else %}
-                                            <!-- Для любых других типов (включая id = 1) просто выводим само значение -->
-                                            {{ row_dict[field] }}
+                                            {{ record[field] }}
                                         {% endif %}
-
                                     </td>
                                 {% endfor %}
                                 
                                 <td style="text-align: right; width: 180px; white-space: nowrap;">
-                                    <button class="action-btn btn-edit" data-id="{{ row_dict['id'] }}">Изменить</button>
-                                    <button class="action-btn btn-delete" data-id="{{ row_dict['id'] }}">Удалить</button>
+                                    <button class="action-btn btn-edit" data-id="{{ record['id'] }}">Изменить</button>
+                                    <button class="action-btn btn-delete" data-id="{{ record['id'] }}">Удалить</button>
                                 </td>
                             </tr>
                         {% else %}
@@ -92,18 +80,18 @@
                     </tbody>
                 </table>
             </div>
-
         </section>
     </div>
+
 </div>
-<!-- В самый конец блока content -->
-<div id="editModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-    <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 8px; width: 400px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-        <span class="close-modal" style="float: right; font-size: 24px; cursor: pointer; font-weight: bold;">&times;</span>
-        <h2 style="margin-top: 0;">Редактирование записи</h2>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 style="margin-bottom: 10px;">Редактирование записи</h2>
         <form id="editForm">
             <div id="formFieldsContainer">
-                <!-- Сюда JavaScript будет динамически добавлять поля ввода -->
+                <!-- Пространтсво для строк -->
             </div>
             <div style="margin-top: 20px; text-align: right;">
                 <button type="button" class="action-btn" id="cancelEditBtn" style="background: #6c757d; color: #fff;">Отмена</button>
@@ -113,6 +101,7 @@
     </div>
 </div>
 {% endblock %}
+
 {% block scripts %}
     <script src="{{ url_for('static', path='/admin.js') }}"></script>
 {% endblock %}

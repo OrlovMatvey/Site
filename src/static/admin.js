@@ -6,23 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // === ЛОГИКА УДАЛЕНИЯ ===
     document.querySelectorAll(".btn-delete").forEach(button => {
         button.addEventListener("click", async (e) => {
-            const rowId = button.getAttribute("data-id");
-            
+            const rowId = button.getAttribute("data-id");         
             if (confirm(`Вы уверены, что хотите удалить запись #${rowId}?`)) {
                 try {
                     const response = await fetch(`/Admin/${currentTable}/${rowId}`, {
                         method: "DELETE"
                     });
-                    
-                    const result = await response.json();
-                    if (response.ok && result.status === "success") {
-                        // Находим строку таблицы <tr> и плавно удаляем её из HTML
+                    if(response.ok){
                         button.closest("tr").remove();
-                    } else {
-                        alert("Ошибка при удалении: " + (result.detail || "Неизвестная ошибка"));
                     }
                 } catch (error) {
-                    alert("Не удалось связаться с сервером");
+                    console.log("Не удалось связаться с сервером");
                 }
             }
         });

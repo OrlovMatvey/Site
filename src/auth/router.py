@@ -37,7 +37,7 @@ def register(
         httponly=True,
         samesite="lax",
         path="/",
-        max_age=coockie_data.access_token
+        max_age=coockie_data.access_expires_in
     )
     redirect_response.set_cookie(
         key="refresh_token",
@@ -64,23 +64,25 @@ def login(
     Returns:
         RedirectResponse: Редирект на главную страницу.
     """
-    coockie_data = authenticate_user(request.email, request.password, db)
+    coockie_data: TokenCookiesModel = authenticate_user(
+        request.email, request.password, db
+    )
     redirect_response = RedirectResponse(url="/", status_code=303)
     redirect_response.set_cookie(
         key="access_token",
-        value=coockie_data["access_token"],
+        value=coockie_data.access_token,
         httponly=True,
         samesite="lax",
         path="/",
-        max_age=coockie_data["access_expires_in"]
+        max_age=coockie_data.access_expires_in
     )
     redirect_response.set_cookie(
         key="refresh_token",
-        value=coockie_data["refresh_token"],
+        value=coockie_data.refresh_token,
         httponly=True,
         samesite="lax",
         path="/",
-        max_age=coockie_data["refresh_expires_in"]
+        max_age=coockie_data.refresh_expires_in
     )
     return redirect_response
 
@@ -117,6 +119,7 @@ def get_login_page(request: Request) -> Response:
     return TEMPLATES.TemplateResponse(request=request, name="user_in.html")
 
 
+# Переделать под POST/DELETE
 @router.get("/Logout")
 def logout(
     refresh_token: str = Cookie(None),

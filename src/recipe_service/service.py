@@ -30,12 +30,14 @@ def get_profile_from_db(
     ingredients_data: list[dict] = []
     categories = db.scalars(select(CategoryData)).all()
     ingredients = db.scalars(select(IngredientData)).all()
-    recipes = db.scalars(
+    recipe_objects = db.scalars(
         select(RecipeData).where(RecipeData.user_id == user_object.id)
     ).all()
-    for recipe in recipes:
-        recipe.image = base64.b64encode(recipe.image).decode("utf-8")
-        recipes_data.append(recipe.get_dict())
+    for recipe_object in recipe_objects:
+        recipe_data = recipe_object.get_dict()
+        recipe_data["image"] = base64.b64encode(recipe_object.image).decode("utf-8")
+        recipe_data["category"] = recipe_object.category_obj.name
+        recipes_data.append(recipe_data)
     for category in categories:
         categories_data.append({"name": category.name, "id": category.id})
     for ingredient in ingredients:
@@ -114,5 +116,6 @@ def get_recipes_from_db(db: Session) -> dict[str, list]:
         recipe_data["image"] = base64.b64encode(
             recipe_data["image"]
         ).decode("utf-8")
+        recipe_data["category"] = recipe_object.category_obj.name
         recipes_data.append(recipe_data)
     return {"recipes_data": recipes_data}
