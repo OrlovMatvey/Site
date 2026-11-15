@@ -8,25 +8,54 @@
         <h1>Свежие рецепты</h1>
     </div>
 
-    <!-- Сетка с карточками -->
     <div class="recipes-grid">
-        
         {% for recipe in recipes_data %}
-        
-        <article class="recipe-card">
+        <article class="recipe-card" 
+        data-title="{{ recipe.title }}"
+        data-category="{{ recipe.category }}"
+        data-body="{{ recipe.body }}"
+        onclick="showModal(this)">
             <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
             <div class="recipe-info">
                 <h3 class="recipe-title">{{ recipe.title }}</h3>
-                <p class="recipe-description">{{ recipe.body }}.</p>
+                <p class="recipe-description">{{ recipe.body[0:20] }}...</p>
                 <div class="recipe-meta">
                     <span>🏷️Категория: {{ recipe.category }}</span>
                     <span>✍️ Редактировать</span>
                 </div>
             </div>
         </article>
-
         {% endfor %}
-
     </div>
+
+    <div id="recipeModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <!-- event.stopPropagation() -->
+            
+            <div style="padding: 0px 20px;" class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <span class="btn-close" onclick="closeModal()">&times;</span>
+            </div>
+
+            <div class="modal-image-wrapper">
+                <img id="modalImage" src="" alt="Фото рецепта">
+            </div>
+
+            <div class="modal-body">
+                <label class="labelo" for="modalText">Описание:</label>
+                <p id="modalText"></p>
+                <label class="labelo" for="modalText">Ингредиенты:</label>
+            </div>
+            <div class="modal-footer">
+                <label class="labelo" for="modalText">Категория:</label>
+                <span id="modalCategory"></span>
+            </div>
+        </div>
+    </div>
+    
 </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', path='/index.js') }}"></script>
 {% endblock %}

@@ -714,3 +714,102 @@ body.main-layout {
 .error-footer a:hover {
     text-decoration: underline;
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Само модальное окно */
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 16px;
+    max-width: 650px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+/* Верхняя панель: категория слева, крестик справа */
+
+/* Бейджик категории */
+#modalCategory {
+    display: inline-block;
+    background-color: #0057b369;
+    color: #4b5563;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Отдельное поле-рамка для картинки */
+.modal-image-wrapper {
+    margin: 0 24px; /* Отступы по бокам от краев окна */
+    padding: 3px; /* Внутренний отступ (создает эффект паспарту/рамки) */
+    background-color: #000000; /* Светло-серый фон подложки *//* Тонкая аккуратная рамка */
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+/* Сама картинка внутри рамки */
+#modalImage {
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border-radius: 8px; /* Скругление углов самой фотографии */
+    display: block;
+}
+
+/* Текстовая часть */
+.modal-body {
+    padding: 20px 24px 28px 24px;
+}
+
+#modalTitle {
+    font-size: 1.6rem;
+    color: #111827;
+}
+
+#modalText {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #374151;
+    white-space: pre-line;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.labelo {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+.modal-footer {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 0px 20px;
+}
