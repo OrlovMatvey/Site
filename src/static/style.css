@@ -543,6 +543,7 @@ body.main-layout {
 .ingredient-row {
     display: flex;
     align-items: center;
+    overflow-y: auto;
     gap: 10px;
     background: #fff;
     padding: 8px 12px;
@@ -753,6 +754,15 @@ body.main-layout {
     font-size: 0.85rem;
     font-weight: 500;
 }
+#modalCategory2 {
+    display: inline-block;
+    background-color: #0057b369;
+    color: #4b5563;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
 
 /* Отдельное поле-рамка для картинки */
 .modal-image-wrapper {
@@ -771,6 +781,13 @@ body.main-layout {
     border-radius: 8px; /* Скругление углов самой фотографии */
     display: block;
 }
+#modalImage2 {
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border-radius: 8px; /* Скругление углов самой фотографии */
+    display: block;
+}
 
 /* Текстовая часть */
 .modal-body {
@@ -781,8 +798,19 @@ body.main-layout {
     font-size: 1.6rem;
     color: #111827;
 }
+#modalTitle2 {
+    font-size: 1.6rem;
+    color: #111827;
+}
 
 #modalText {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #374151;
+    white-space: pre-line;
+}
+#modalText2 {
     margin: 0;
     font-size: 1rem;
     line-height: 1.65;

@@ -21,10 +21,14 @@
                 <p class="recipe-description">{{ recipe.body[0:20] }}...</p>
                 <div class="recipe-meta">
                     <span>🏷️Категория: {{ recipe.category }}</span>
-                    <span>✍️ Редактировать</span>
+                    <span>✍️Комментарии: 5</span>
                 </div>
             </div>
         </article>
+        {% else %}
+        <div class="no-recipes-message" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6c757d;">
+            <p>Похоже, что еще никто не добавил свои рецепты!</p>
+        </div>
         {% endfor %}
     </div>
 
