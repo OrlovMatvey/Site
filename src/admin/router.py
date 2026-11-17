@@ -31,7 +31,11 @@ def get_admin_page(
 
 
 @router.delete("/{table_name}/{record_id}")
-def delete_record(table_name: str, record_id: int, db: Session = Depends(get_db)) -> Response:
+def delete_record(
+    table_name: str,
+    record_id: int,
+    db: Session = Depends(get_db)
+) -> Response:
     is_deleted = delete_record_by_id(table_name, record_id, db)
     if not is_deleted:
         raise HTTPException(status_code=404, detail="Запись или таблица не найдена")
@@ -39,8 +43,17 @@ def delete_record(table_name: str, record_id: int, db: Session = Depends(get_db)
 
 
 @router.post("/{table_name}/{record_id}")
-def update_record(table_name: str, record_id: int, request: Request, db: Session = Depends(get_db)) -> Response:
-    record_data = request.json
+async def update_record(
+    table_name: str,
+    record_id: int,
+    request: Request,
+    db: Session = Depends(get_db)
+) -> Response:
+    record_data = await request.json()
     is_updated = update_record_by_id(table_name, record_id, record_data, db)
+    if not is_updated:
+        raise HTTPException(
+            status_code=500, detail="Ошибка при обновлении записи"
+        )
     Response(status_code=200)
     # Сделать функционал обновления записи

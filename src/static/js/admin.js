@@ -25,11 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("editModal");
     const editForm = document.getElementById("editForm");
     const container = document.getElementById("formFieldsContainer");
+    let activeRowId = null
     
     // Модальное окно
     document.querySelectorAll(".btn-edit").forEach(button => {
         button.addEventListener("click", (e) => {
             const row = button.closest("tr");
+            activeRowId = button.getAttribute("data-id"); 
             const fields = container.querySelectorAll('input')
             fields.forEach(field => {
                 const cell = row.querySelector(`td[data-name="${field.name}"]`)
@@ -47,18 +49,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".close-modal").addEventListener("click", closeModal);
     document.getElementById("cancelEditBtn").addEventListener("click", closeModal);
 
-    // Отправка измененных данных на сервер
+    // Отправка данных на сервер в JSON формате
     editForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(editForm);
         const data = {};
         
-        
-        // Превращаем данные формы в обычный JSON-объект
         formData.forEach((value, key) => {
-            // Приведение строковых "Да/Нет" к булевым значениям для БД
-            if (value.toLowerCase() === "да") value = true;
-            if (value.toLowerCase() === "нет") value = false;
+            if (value.toLowerCase() === "да"){value = true};
+            if (value.toLowerCase() === "нет"){value = false};
             data[key] = value;
         });
 
@@ -69,12 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(data)
             });
 
-            const result = await response.json();
-            if (response.ok && result.status === "success") {
+            if (response.ok){
                 alert("Данные успешно сохранены!");
-                window.location.reload(); // Перезагружаем страницу, чтобы увидеть изменения из БД
-            } else {
-                alert("Ошибка сохранения: " + (result.detail || "Неизвестная ошибка"));
+                window.location.reload();
             }
         } catch (error) {
             alert("Ошибка при отправке данных на сервер");

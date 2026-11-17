@@ -67,31 +67,37 @@ def add_new_recipe(
     Returns:
         RecipeData: Объект записи рецепта
     """
-    user_id = user_object.id
-    recipe_object = RecipeData(
-        title=recipe_data.title,
-        category=recipe_data.category,
-        body=recipe_data.body,
-        image=recipe_data.image,
-        user_id=user_id,
-    )
-    db.add(recipe_object)
-    db.flush()
-    recipe_id = recipe_object.id
-    for ingredient_id, ingredient_vol, ingredient_unit in zip(
-        recipe_data.ingredient_ids,
-        recipe_data.ingredient_volumes,
-        recipe_data.ingredient_units
-    ):
-        recipe_ingredient_object = RecipeIngredientData(
-            recipe_id=recipe_id,
-            ingredient_id=ingredient_id,
-            volume=ingredient_vol,
-            unit=ingredient_unit
+    try:
+        user_id = user_object.id
+        recipe_object = RecipeData(
+            title=recipe_data.title,
+            category=recipe_data.category,
+            body=recipe_data.body,
+            image=recipe_data.image,
+            user_id=user_id,
         )
-        db.add(recipe_ingredient_object)
-    db.commit()
-    return recipe_object
+        db.add(recipe_object)
+        db.flush()
+        recipe_id = recipe_object.id
+        for ingredient_id, ingredient_vol, ingredient_unit in zip(
+            recipe_data.ingredient_ids,
+            recipe_data.ingredient_volumes,
+            recipe_data.ingredient_units
+        ):
+            recipe_ingredient_object = RecipeIngredientData(
+                recipe_id=recipe_id,
+                ingredient_id=ingredient_id,
+                volume=ingredient_vol,
+                unit=ingredient_unit
+            )
+            db.add(recipe_ingredient_object)
+        db.commit()
+        return recipe_object
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=500, detail="Ошибка при создании рецепта"
+        )
 
 
 def get_recipes_from_db(db: Session) -> dict[str, list]:

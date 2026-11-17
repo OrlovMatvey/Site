@@ -40,7 +40,9 @@ def delete_record_by_id(table_name: str, record_id: int, db: Session) -> bool:
     table_model = TABLES_MAP.get(table_name)
     if not table_model:
         return False
-    record_object = db.scalar(select(table_model).where(table_model.id == record_id))
+    record_object = db.scalar(
+        select(table_model).where(table_model.id == record_id)
+    )
     if not record_object:
         return False
     db.delete(record_object)
@@ -48,16 +50,24 @@ def delete_record_by_id(table_name: str, record_id: int, db: Session) -> bool:
     return True
 
 
-def update_record_by_id(table_name: str, record_id: int, record_data: dict, db: Session) -> bool:
+def update_record_by_id(
+    table_name: str,
+    record_id: int,
+    record_data: dict,
+    db: Session
+) -> bool:
     table_model = TABLES_MAP.get(table_name)
     if not table_model:
         return False
-    record_object = db.scalar(select(table_model).where(table_model.id == record_id))
+    record_object = db.scalar(
+        select(table_model).where(table_model.id == record_id)
+    )
     if not record_object:
         return False
     model_fields = table_model.get_table_fields()
     for model_field in model_fields:
-        setattr(record_object, model_field, record_data[model_field])
+        if model_field != "id":
+            setattr(record_object, model_field, record_data[model_field])
     db.add(record_object)
     db.commit()
     return True
