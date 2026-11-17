@@ -37,6 +37,12 @@ def get_profile_from_db(
         recipe_data = recipe_object.get_dict()
         recipe_data["image"] = base64.b64encode(recipe_object.image).decode("utf-8")
         recipe_data["category"] = recipe_object.category_obj.name
+        recipe_data["ingredients"] = {}
+        for recipe_ingredient in recipe_object.ingredients:
+            recipe_data["ingredients"][recipe_ingredient.ingredient_obj.name] = (
+                str(recipe_ingredient.volume)+str(recipe_ingredient.unit)
+            )
+        print(["ingredients"])
         recipes_data.append(recipe_data)
     for category in categories:
         categories_data.append({"name": category.name, "id": category.id})

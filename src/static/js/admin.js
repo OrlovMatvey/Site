@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const currentTable = urlParams.get('table') || 'users';
+    const modal = document.getElementById("editModal");
+    const editForm = document.getElementById("editForm");
+    const container = document.getElementById("formFieldsContainer");
+    let rowId = null
 
     // ЛОГИКА УДАЛЕНИЯ
     document.querySelectorAll(".btn-delete").forEach(button => {
         button.addEventListener("click", async (e) => {
-            const rowId = button.getAttribute("data-id");         
+            rowId = button.getAttribute("data-id");         
             if (confirm(`Вы уверены, что хотите удалить запись #${rowId}?`)) {
                 try {
                     const response = await fetch(`/Admin/${currentTable}/${rowId}`, {
@@ -22,24 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ЛОГИКА ИЗМЕНЕНИЯ
-    const modal = document.getElementById("editModal");
-    const editForm = document.getElementById("editForm");
-    const container = document.getElementById("formFieldsContainer");
-    let activeRowId = null
     
     // Модальное окно
     document.querySelectorAll(".btn-edit").forEach(button => {
         button.addEventListener("click", (e) => {
             const row = button.closest("tr");
-            activeRowId = button.getAttribute("data-id"); 
+            rowId = button.getAttribute("data-id"); 
             const fields = container.querySelectorAll('input')
             fields.forEach(field => {
                 const cell = row.querySelector(`td[data-name="${field.name}"]`)
                 const value = cell.textContent.trim();
                 field.value = value
             })
-            const formData = new FormData(editForm);
-            console.log(formData.entries())
             modal.style.display = "flex"; // Показываем модальное окно
         });
     });
@@ -62,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         try {
-            const response = await fetch(`/Admin/${currentTable}/${activeRowId}`, {
+            const response = await fetch(`/Admin/${currentTable}/${rowId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)

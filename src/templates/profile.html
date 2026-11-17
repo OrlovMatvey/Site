@@ -26,6 +26,7 @@
             <article class="recipe-card"
             data-title="{{ recipe.title }}"
             data-category="{{ recipe.category }}"
+            data-ingredients="{{ recipe.ingredients }}"
             data-body="{{ recipe.body }}"
             onclick="showModal(this)">
                 <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
@@ -135,9 +136,10 @@
             </div>
 
             <div class="modal-body">
-                <label class="labelo" for="modalText">Описание:</label>
+                <label class="labelo" for="modalText2">Описание:</label>
                 <p id="modalText2"></p>
-                <label class="labelo" for="modalText">Ингредиенты:</label>
+                <label class="labelo" for="modalIngredients2">Ингредиенты:</label>
+                <p style="font-size: 1.2rem; margin-top: 10px;" id="modalIngredients2"></p>
             </div>
             <div class="modal-footer">
                 <label class="labelo" for="modalText">Категория:</label>

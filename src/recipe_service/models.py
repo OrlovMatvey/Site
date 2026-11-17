@@ -20,6 +20,7 @@ class RecipeData(Base):
 
     ingredients: Mapped[list["RecipeIngredientData"]] = relationship(
         "RecipeIngredientData",
+        back_populates="recipe_obj",
         cascade="all, delete-orphan"
     )
 
@@ -78,3 +79,6 @@ class RecipeIngredientData(Base):
     ingredient_id: Mapped[int] = mapped_column(ForeignKey('IngredientData.id'))
     volume: Mapped[float] = mapped_column(Float)
     unit: Mapped[str] = mapped_column(String(20))
+
+    recipe_obj: Mapped["RecipeData"] = relationship(back_populates="ingredients")
+    ingredient_obj: Mapped["IngredientData"] = relationship("IngredientData", lazy="joined")

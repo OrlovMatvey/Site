@@ -56,4 +56,3 @@ async def update_record(
             status_code=500, detail="Ошибка при обновлении записи"
         )
     Response(status_code=200)
-    # Сделать функционал обновления записи

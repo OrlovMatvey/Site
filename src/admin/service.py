@@ -71,4 +71,3 @@ def update_record_by_id(
     db.add(record_object)
     db.commit()
     return True
-    # Сделать функционал обновления записи
