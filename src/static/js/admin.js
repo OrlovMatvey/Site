@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Получаем имя текущей таблицы из URL параметров (например, ?table=tokens)
     const urlParams = new URLSearchParams(window.location.search);
     const currentTable = urlParams.get('table') || 'users';
 
-    // === ЛОГИКА УДАЛЕНИЯ ===
+    // ЛОГИКА УДАЛЕНИЯ
     document.querySelectorAll(".btn-delete").forEach(button => {
         button.addEventListener("click", async (e) => {
             const rowId = button.getAttribute("data-id");         
@@ -22,61 +21,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // === ЛОГИКА ИЗМЕНЕНИЯ (МОДАЛЬНОЕ ОКНО) ===
+    // ЛОГИКА ИЗМЕНЕНИЯ
     const modal = document.getElementById("editModal");
     const editForm = document.getElementById("editForm");
     const container = document.getElementById("formFieldsContainer");
-    let activeRowId = null;
-
+    
+    // Модальное окно
     document.querySelectorAll(".btn-edit").forEach(button => {
         button.addEventListener("click", (e) => {
-            activeRowId = button.getAttribute("data-id");
             const row = button.closest("tr");
-            container.innerHTML = ""; // Очищаем старые поля формы
-
-            // Собираем все данные из текущей строки таблицы
-            // Браузер пробежится по ячейкам <td> и создаст input под каждое поле
-            const headers = Array.from(document.querySelectorAll(".db-table th")).map(th => th.innerText.toLowerCase());
-            const cells = Array.from(row.querySelectorAll("td"));
-
-            headers.forEach((header, index) => {
-                if (header === "действия") return; // Кнопки не редактируем
-                
-                const cellValue = cells[index].getAttribute("title") || cells[index].innerText.trim();
-
-                const fieldWrapper = document.createElement("div");
-                fieldWrapper.style.marginBottom = "12px";
-
-                const label = document.createElement("label");
-                label.innerText = header.toUpperCase();
-                label.style.display = "block";
-                label.style.marginBottom = "4px";
-                label.style.fontWeight = "bold";
-
-                const input = document.createElement("input");
-                input.name = header;
-                input.value = cellValue;
-                input.style.width = "100%";
-                input.style.padding = "6px";
-                input.style.boxSizing = "border-box";
-                input.style.padding = "10px";
-                input.style.border = "1px solid #ccc";
-                input.style.borderRadius = "6px";
-                input.style.fontFamily = "inherit";
-                input.style.fontSize = "1rem";
-
-                // Запрещаем редактировать ID
-                if (header === "id") {
-                    input.disabled = true;
-                    input.style.backgroundColor = "#e9ecef";
-                }
-
-                fieldWrapper.appendChild(label);
-                fieldWrapper.appendChild(input);
-                container.appendChild(fieldWrapper);
-            });
-
-            modal.style.display = "block"; // Показываем модальное окно
+            const fields = container.querySelectorAll('input')
+            fields.forEach(field => {
+                const cell = row.querySelector(`td[data-name="${field.name}"]`)
+                const value = cell.textContent.trim();
+                field.value = value
+            })
+            const formData = new FormData(editForm);
+            console.log(formData.entries())
+            modal.style.display = "flex"; // Показываем модальное окно
         });
     });
 
@@ -90,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const formData = new FormData(editForm);
         const data = {};
+        
         
         // Превращаем данные формы в обычный JSON-объект
         formData.forEach((value, key) => {

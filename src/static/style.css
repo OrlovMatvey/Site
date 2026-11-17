@@ -841,3 +841,13 @@ body.main-layout {
     margin-top: 20px;
     padding: 0px 20px;
 }
+.inp {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: rgb(233, 236, 239);
+}
