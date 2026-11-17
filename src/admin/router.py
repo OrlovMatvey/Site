@@ -20,6 +20,16 @@ def get_admin_page(
     table: str = "User",
     db: Session = Depends(get_db)
 ) -> HTMLResponse:
+    """Эндпоинт для получения страницы админ-панели
+
+    Args:
+        request (Request): Тело запроса.
+        table (str, optional): Имя текущей таблицы.
+        db (Session, optional): Объект сессии в БД.
+
+    Returns:
+        HTMLResponse: Возращает шаблон страницы админ-панели
+    """
     panel_data = get_table_data_from_db(table, db)
     return TEMPLATES.TemplateResponse(
         request=request, name="admin.html", context={
@@ -36,10 +46,23 @@ def delete_record(
     record_id: int,
     db: Session = Depends(get_db)
 ) -> Response:
+    """Эндпоинт для удаления конкретной записи из БД
+
+    Args:
+        table_name (str): Имя текущей таблицы.
+        record_id (int): ID выбранной записи.
+        db (Session, optional): Объект сессии в БД.
+
+    Raises:
+        HTTPException: Запись или таблица не найдена.
+
+    Returns:
+        Response: Пустой ответ, код 204.
+    """
     is_deleted = delete_record_by_id(table_name, record_id, db)
     if not is_deleted:
         raise HTTPException(status_code=404, detail="Запись или таблица не найдена")
-    return Response(status_code=203)
+    return Response(status_code=204)
 
 
 @router.post("/{table_name}/{record_id}")
@@ -49,10 +72,24 @@ async def update_record(
     request: Request,
     db: Session = Depends(get_db)
 ) -> Response:
+    """Эндпоинт для обновления конкретной записи из БД
+
+    Args:
+        table_name (str): Имя текущей таблицы.
+        record_id (int): ID выбранной записи.
+        request (Request): Тело запроса.
+        db (Session, optional): Объект сессии в БД.
+
+    Raises:
+        HTTPException: Ошибка при обновлении записи
+
+    Returns:
+        Response: Пустой ответ, код 204.
+    """
     record_data = await request.json()
     is_updated = update_record_by_id(table_name, record_id, record_data, db)
     if not is_updated:
         raise HTTPException(
             status_code=500, detail="Ошибка при обновлении записи"
         )
-    Response(status_code=200)
+    return Response(status_code=204)

@@ -4,10 +4,10 @@
     <div class="content-container">
         
         <section class="profile-block">
-            <div class="profile-avatar">{{user_data[0].username[0]}}</div>
+            <div class="profile-avatar">{{user_data.username[0]}}</div>
             <div class="profile-details">
-                <h2>{{ user_data[0].username }}</h2>
-                <p>Электронная почта: {{ user_data[0].email }}</p>
+                <h2>{{ user_data.username }}</h2>
+                <p>Электронная почта: {{ user_data.email }}</p>
                 {% if recipes_data%}
                     <p>Добавлено рецептов: {{ recipes_data|length }}</p>
                 {% else %}

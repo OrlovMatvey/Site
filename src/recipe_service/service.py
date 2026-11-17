@@ -1,5 +1,6 @@
 """Модуль бизнес-логики для сервиса Рецептов"""
 import base64
+from typing import Any
 
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -14,7 +15,7 @@ from .schemas import NewRecipeModel
 def get_profile_from_db(
     user_object: CurrentUserModel,
     db: Session
-) -> dict[str, list]:
+) -> dict[str, Any]:
     """Получение информации из БД для шаблона профиля
 
     Args:
@@ -24,12 +25,11 @@ def get_profile_from_db(
     Returns:
         dict[str, list]: Словарь с контекстом для шаблона.
     """
-    context: dict[str, list] = {}
     recipes_data: list[dict] = []
     categories_data: list[dict] = []
     ingredients_data: list[dict] = []
-    categories = db.scalars(select(CategoryData)).all()
-    ingredients = db.scalars(select(IngredientData)).all()
+    categories_objects = db.scalars(select(CategoryData)).all()
+    ingredient_objects = db.scalars(select(IngredientData)).all()
     recipe_objects = db.scalars(
         select(RecipeData).where(RecipeData.user_id == user_object.id)
     ).all()
@@ -42,17 +42,15 @@ def get_profile_from_db(
             recipe_data["ingredients"][recipe_ingredient.ingredient_obj.name] = (
                 str(recipe_ingredient.volume)+str(recipe_ingredient.unit)
             )
-        print(["ingredients"])
         recipes_data.append(recipe_data)
-    for category in categories:
+    for category in categories_objects:
         categories_data.append({"name": category.name, "id": category.id})
-    for ingredient in ingredients:
+    for ingredient in ingredient_objects:
         ingredients_data.append({"name": ingredient.name, "id": ingredient.id})
-    context["categories_data"] = categories_data
-    context["user_data"] = [user_object]
-    context["recipes_data"] = recipes_data
-    context["ingredients_data"] = ingredients_data
-    return context
+    return {
+        "categories_data": categories_data, "user_data": user_object,
+        "recipes_data": recipes_data, "ingredients_data": ingredients_data
+    }
 
 
 def add_new_recipe(
@@ -99,8 +97,9 @@ def add_new_recipe(
             db.add(recipe_ingredient_object)
         db.commit()
         return recipe_object
-    except Exception:
+    except Exception as e:
         db.rollback()
+        print("Произошла ошибка:", e)
         raise HTTPException(
             status_code=500, detail="Ошибка при создании рецепта"
         )
