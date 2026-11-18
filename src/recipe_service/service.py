@@ -86,7 +86,8 @@ def add_new_recipe(
         for ingredient_id, ingredient_vol, ingredient_unit in zip(
             recipe_data.ingredient_ids,
             recipe_data.ingredient_volumes,
-            recipe_data.ingredient_units
+            recipe_data.ingredient_units,
+            strict=True
         ):
             recipe_ingredient_object = RecipeIngredientData(
                 recipe_id=recipe_id,

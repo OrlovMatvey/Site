@@ -21,10 +21,9 @@ def get_index_page(
 
     Args:
         request (Request): Тело запроса.
-        current_user (CurrentUserModel, optional): Текущий юзер из зависимости.
         db (Session, optional): Объект сессии БД.
     Returns:
-        HTMLResponse: Возвращает шаблон главной страницы
+        HTMLResponse: Возвращает шаблон главной страницы.
     """
     context = get_recipes_from_db(db)
     return TEMPLATES.TemplateResponse(
@@ -46,7 +45,7 @@ def get_profile_page(
         db (Session, optional): Объект сессии БД.
 
     Returns:
-        HTMLResponse: Возвращает шаблон страницы профиля
+        HTMLResponse: Возвращает шаблон страницы профиля.
     """
     context = get_profile_from_db(current_user, db)
     return TEMPLATES.TemplateResponse(
@@ -68,7 +67,7 @@ def create_recipe(
         db (Session, optional): Объект сессии БД.
 
     Returns:
-        RedirectResponse: Перезагрузка страницы(Редирект)
+        RedirectResponse: Перезагрузка страницы(Редирект).
     """
     add_new_recipe(current_user, recipe_data, db)
     return RedirectResponse(url="/Service/Profile", status_code=303)

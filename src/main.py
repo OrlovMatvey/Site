@@ -31,9 +31,6 @@ app.include_router(admin_router)
 def main() -> RedirectResponse:
     """Точка входа в приложение
 
-    Args:
-        access_token (bool, optional): Access token из зависимости.
-
     Returns:
         RedirectResponse: Редирект на главную страницу
     """
