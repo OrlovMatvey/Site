@@ -13,6 +13,7 @@
         <article class="recipe-card" 
         data-title="{{ recipe.title }}"
         data-category="{{ recipe.category }}"
+        data-ingredients="{{ recipe.ingredients }}"
         data-body="{{ recipe.body }}"
         onclick="showModal(this)">
             <img src="data:image/jpeg;base64,{{ recipe.image }}" alt="Фото рецепта">
@@ -32,27 +33,28 @@
         {% endfor %}
     </div>
 
-    <div id="recipeModal" class="modal" onclick="closeModal()">
+    <div id="recipeModal2" class="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <!-- event.stopPropagation() -->
             
             <div style="padding: 0px 20px;" class="modal-header">
-                <h2 id="modalTitle"></h2>
+                <h2 id="modalTitle2"></h2>
                 <span class="btn-close" onclick="closeModal()">&times;</span>
             </div>
 
             <div class="modal-image-wrapper">
-                <img id="modalImage" src="" alt="Фото рецепта">
+                <img id="modalImage2" src="" alt="Фото рецепта">
             </div>
 
             <div class="modal-body">
-                <label class="labelo" for="modalText">Описание:</label>
-                <p id="modalText"></p>
-                <label class="labelo" for="modalText">Ингредиенты:</label>
+                <label class="labelo" for="modalText2">Описание:</label>
+                <p id="modalText2"></p>
+                <label class="labelo" for="modalIngredients2">Ингредиенты:</label>
+                <p style="font-size: 1.2rem; margin-top: 10px;" id="modalIngredients2"></p>
             </div>
             <div class="modal-footer">
-                <label class="labelo" for="modalText">Категория:</label>
-                <span id="modalCategory"></span>
+                <label class="labelo" for="modalText2">Категория:</label>
+                <span id="modalCategory2"></span>
             </div>
         </div>
     </div>

@@ -791,7 +791,7 @@ body.main-layout {
 
 /* Текстовая часть */
 .modal-body {
-    padding: 20px 24px 28px 24px;
+    padding: 20px 24px 0px 24px;
 }
 
 #modalTitle {

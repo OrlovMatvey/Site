@@ -123,5 +123,10 @@ def get_recipes_from_db(db: Session) -> dict[str, list]:
             recipe_data["image"]
         ).decode("utf-8")
         recipe_data["category"] = recipe_object.category_obj.name
+        recipe_data["ingredients"] = {}
+        for recipe_ingredient in recipe_object.ingredients:
+            recipe_data["ingredients"][recipe_ingredient.ingredient_obj.name] = (
+                str(recipe_ingredient.volume)+str(recipe_ingredient.unit)
+            )
         recipes_data.append(recipe_data)
     return {"recipes_data": recipes_data}

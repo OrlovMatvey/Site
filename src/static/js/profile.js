@@ -77,6 +77,7 @@ modal.addEventListener('click', (e) => {
 });
 
 function showModal(card) {
+    document.getElementById("modalIngredients2").textContent = ""
     document.getElementById("modalTitle2").textContent = card.dataset.title;
     document.getElementById("modalCategory2").textContent = "🏷️ " + card.dataset.category;
     for (const element of card.dataset.ingredients){
