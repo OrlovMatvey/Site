@@ -1,4 +1,6 @@
 """Модуль ORM-моделей БД для сервиса Рецептов"""
+from datetime import datetime
+
 from sqlalchemy import Float, ForeignKey, LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -12,7 +14,7 @@ class RecipeData(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50))
     category: Mapped[int] = mapped_column(ForeignKey('CategoryData.id'))
-    body: Mapped[str] = mapped_column(String(500))
+    body: Mapped[str] = mapped_column(String(3000))
     image: Mapped[bytes] = mapped_column(LargeBinary)
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
     count_likes: Mapped[int] = mapped_column(nullable=True)
@@ -38,6 +40,7 @@ class CommentData(Base):
     body: Mapped[str] = mapped_column(String(1000))
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
     recipe_id: Mapped[int] = mapped_column(ForeignKey('RecipeData.id'))
+    created_at: Mapped[datetime] = mapped_column()
 
 
 class FavoriteRecipeData(Base):
@@ -82,3 +85,12 @@ class RecipeIngredientData(Base):
 
     recipe_obj: Mapped["RecipeData"] = relationship(back_populates="ingredients")
     ingredient_obj: Mapped["IngredientData"] = relationship("IngredientData", lazy="joined")
+
+class RecipeReactionData(Base):
+    __tablename__ = "RecipeReactionData"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    recipe_id: Mapped[int] = mapped_column(ForeignKey("RecipeData.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("UserData.id"))
+    is_like: Mapped[bool] = mapped_column()
+    created_at: Mapped[datetime] = mapped_column()
