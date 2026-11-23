@@ -71,3 +71,23 @@ def create_recipe(
     """
     add_new_recipe(current_user, recipe_data, db)
     return RedirectResponse(url="/Service/Profile", status_code=303)
+
+
+#Функционал добавления реакции Лайк/Дизлайк
+@router.post("/Reaction/{recipe_id}")
+async def add_reaction(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    reaction_data = await request.json()
+    pass
+
+
+#Функционал добавления комментария
+@router.post("/Comment/{recipe_id}")
+async def add_comment(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    comment_data = await request.json()
+    pass
