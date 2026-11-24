@@ -17,8 +17,6 @@ class RecipeData(Base):
     body: Mapped[str] = mapped_column(String(3000))
     image: Mapped[bytes] = mapped_column(LargeBinary)
     user_id: Mapped[int] = mapped_column(ForeignKey('UserData.id'))
-    count_likes: Mapped[int] = mapped_column(nullable=True)
-    count_dislikes: Mapped[int] = mapped_column(nullable=True)
 
     ingredients: Mapped[list["RecipeIngredientData"]] = relationship(
         "RecipeIngredientData",

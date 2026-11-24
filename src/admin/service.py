@@ -2,6 +2,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from src.exceptions import NotFoundError
 from src.auth import UserData, UserTokenData
 from src.recipe_service import (
     CategoryData,
@@ -36,38 +37,37 @@ def get_table_data_from_db(table_name: str, db: Session) -> dict[str, list]:
     return {"fields": table_fields, "records": record_dicts}
 
 
-def delete_record_by_id(table_name: str, record_id: int, db: Session) -> bool:
+def delete_record_by_id(table_name: str, record_id: int, db: Session) -> None:
     table_model = TABLES_MAP.get(table_name)
     if not table_model:
-        return False
+        raise NotFoundError(detail="Таблица не найдена")
     record_object = db.scalar(
         select(table_model).where(table_model.id == record_id)
     )
     if not record_object:
-        return False
+        raise NotFoundError(detail="Запись не найдена")
     db.delete(record_object)
     db.commit()
-    return True
 
 
+# Переделать логику обновления
 def update_record_by_id(
     table_name: str,
     record_id: int,
     record_data: dict,
     db: Session
-) -> bool:
+) -> None:
     table_model = TABLES_MAP.get(table_name)
     if not table_model:
-        return False
+        raise NotFoundError(detail="Таблица не найдена")
     record_object = db.scalar(
         select(table_model).where(table_model.id == record_id)
     )
     if not record_object:
-        return False
+        raise NotFoundError(detail="Запись не найдена")
     model_fields = table_model.get_table_fields()
     for model_field in model_fields:
         if model_field != "id":
             setattr(record_object, model_field, record_data[model_field])
     db.add(record_object)
     db.commit()
-    return True

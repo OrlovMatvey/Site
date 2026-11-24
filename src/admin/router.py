@@ -59,9 +59,7 @@ def delete_record(
     Returns:
         Response: Пустой ответ, код 204.
     """
-    is_deleted = delete_record_by_id(table_name, record_id, db)
-    if not is_deleted:
-        raise HTTPException(status_code=404, detail="Запись или таблица не найдена")
+    delete_record_by_id(table_name, record_id, db)
     return Response(status_code=204)
 
 
@@ -87,9 +85,5 @@ async def update_record(
         Response: Пустой ответ, код 204.
     """
     record_data = await request.json()
-    is_updated = update_record_by_id(table_name, record_id, record_data, db)
-    if not is_updated:
-        raise HTTPException(
-            status_code=500, detail="Ошибка при обновлении записи"
-        )
+    update_record_by_id(table_name, record_id, record_data, db)
     return Response(status_code=204)
