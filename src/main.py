@@ -14,12 +14,14 @@ from src.common import (
 )
 from src.config import settings
 from src.dependencies import is_authenticated
+from src.exceptions import AppException, UnauthorizedError
 from src.recipe_service import service_router
 
 app = FastAPI()
 
 app.add_exception_handler(StarletteException, general_exception_handler)
-app.add_exception_handler(401, auth_exception_handler)
+app.add_exception_handler(AppException, general_exception_handler)
+app.add_exception_handler(UnauthorizedError, auth_exception_handler)
 app.middleware("http")(auto_set_refresh_cookies)
 app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
 app.include_router(auth_router)

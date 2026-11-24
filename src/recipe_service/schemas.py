@@ -4,6 +4,8 @@ from typing import Self
 from fastapi import File, Form, UploadFile
 from pydantic import BaseModel
 
+from src.exceptions import IncorrectInput
+
 
 class NewRecipeModel(BaseModel):
     """Pydantic-модель для валидации запроса на создание нового рецепта
@@ -33,7 +35,11 @@ class NewRecipeModel(BaseModel):
         ingredient_units: list[str] = Form(...),
         image: UploadFile = File(...)
     ) -> Self:
+        if not image.content_type or not image.content_type.startswith("image/"):
+            raise IncorrectInput(detail="Некорректный формат файла")
         image_bytes = await image.read()
+        if not image_bytes:
+            raise IncorrectInput(detail="Некорректный формат файла")
         return cls(
             title=title,
             category=category,

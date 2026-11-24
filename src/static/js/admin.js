@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const currentTable = urlParams.get('table') || 'users';
+    const currentTable = urlParams.get('table') || 'User';
     const modal = document.getElementById("editModal");
     const editForm = document.getElementById("editForm");
     const container = document.getElementById("formFieldsContainer");

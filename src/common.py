@@ -2,13 +2,14 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import HTTPException, Request, Response
+from fastapi import Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr
 from starlette.exceptions import HTTPException as StarletteException
 
 from src.config import settings
+from src.exceptions import AppException
 
 
 def add_auth_context(request: Request) -> dict[str, Any]:
@@ -65,7 +66,7 @@ async def auto_set_refresh_cookies(request: Request, call_next) -> Response:
 
 def auth_exception_handler(
     request: Request,
-    exc: HTTPException
+    exc: AppException
 ) -> RedirectResponse:
     """Обработчик для исключения с кодом 401
 
@@ -76,12 +77,12 @@ def auth_exception_handler(
     Returns:
         RedirectResponse: Редирект на страницу регистрации
     """
-    return RedirectResponse(url="/Auth/SignUp", status_code=303)
+    return RedirectResponse(url="/Auth/SignIn", status_code=303)
 
 
 def general_exception_handler(
     request: Request,
-    exc: StarletteException
+    exc: StarletteException | AppException
 ) -> HTMLResponse:
     """Общий обработчик для исключений
 
@@ -93,6 +94,6 @@ def general_exception_handler(
         HTMLResponse: Шаблон с выводом ошибки.
     """
     context = {"status_code": exc.status_code, "detail": exc.detail}
-    return TEMPLATES.TemplateResponse(
+    return TEMPLATES.TemplateResponse(status_code=exc.status_code,
         request=request, name="error.html", context=context
     )

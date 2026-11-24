@@ -1,11 +1,12 @@
 """Модуль за зависимостей FastAPI"""
 from collections.abc import Iterator
 
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
 from src.common import CurrentUserModel
+from src.exceptions import AccessError, UnauthorizedError
 from src.security import create_access_token, decode_token
 
 
@@ -20,6 +21,9 @@ def get_db() -> Iterator[Session]:
     try:
         db = session()
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 
@@ -35,7 +39,7 @@ def is_authenticated(
         db (Session, optional): Объект сессии БД.
 
     Raises:
-        HTTPException: Пользователь не авторизован
+        UnauthorizedError: Требуется авторизация.
 
     Returns:
         str: Access_token(Новый или из cookie)
@@ -58,7 +62,7 @@ def is_authenticated(
                 request.state.new_access_token = new_access_token
                 return new_access_token
 
-    raise HTTPException(status_code=401, detail="Пользователь не авторизован")
+    raise UnauthorizedError()
 
 
 def get_current_user(
@@ -95,14 +99,11 @@ def get_current_admin(
         user_object (CurrentUserModel, optional): Текущий юзер из зависимости.
 
     Raises:
-        HTTPException: Не авторизован
-        HTTPException: Недостаточно прав
+        AccessError: Недостаточно прав доступа.
 
     Returns:
-        bool: Является ли юзер админом(True/False)
+        bool: Является ли юзер админом(True/False).
     """
-    if not user_object:
-        raise HTTPException(status_code=401, detail="Не авторизован")
     if not user_object.is_admin:
-        raise HTTPException(403, detail="Недостаточно прав доступа")
+        raise AccessError()
     return user_object.is_admin

@@ -2,7 +2,7 @@
 from typing import Self
 
 from fastapi import Form
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class RegisterModel(BaseModel):
@@ -15,14 +15,14 @@ class RegisterModel(BaseModel):
         _type_: Экземпляр модели.
     """
     username: str
-    email: str
+    email: EmailStr
     password: str
 
     @classmethod
     def formBody(
         cls,
         username: str = Form(...),
-        email: str = Form(...),
+        email: EmailStr = Form(...),
         password: str = Form(...)
     ) -> Self:
         return cls(username=username, email=email, password=password)
@@ -37,13 +37,13 @@ class LoginModel(BaseModel):
     Returns:
         _type_: Экземпляр модели.
     """
-    email: str
+    email: EmailStr
     password: str
 
     @classmethod
     def formBody(
         cls,
-        email: str = Form(...),
+        email: EmailStr = Form(...),
         password: str = Form(...)
     ) -> Self:
         return cls(email=email, password=password)

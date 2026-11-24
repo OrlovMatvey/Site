@@ -1,11 +1,11 @@
 """Модуль бизнес-логики для сервиса Регистрации/Авторизации"""
 from datetime import UTC, datetime, timedelta
 
-from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.config import settings
+from src.exceptions import ConflictError, IncorrectInput, NotFoundError
 from src.security import (
     create_access_token,
     create_refresh_token,
@@ -31,33 +31,36 @@ def create_new_user(
         password (str): Пароль пользователя.
         db (_type_): Объект сессии БД.
 
+    Raises:
+        ConflictError: Данный email уже занят.
+
     Returns:
         TokenCookiesModel: Объект с данными для coockie.
     """
     if db.scalar(select(UserData).where(UserData.email == email)):
-        raise HTTPException(status_code=409, detail="Данный email уже занят.")
-    else:
-        hashed_password = hash_password(password)
-        user_object = UserData(
-            username=username,
-            email=email,
-            hash_password=hashed_password
-        )
-        db.add(user_object)
-        db.flush()
-        access_token = create_access_token({"sub": str(user_object.id)})
-        refresh_token = create_refresh_token({"sub": str(user_object.id)})
-        join_user_token(user_object.id, refresh_token, db)
-        return TokenCookiesModel(
-            access_token=access_token,
-            refresh_token=refresh_token,
-            access_expires_in=int(timedelta(
-                minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-            ).total_seconds()),
-            refresh_expires_in=int(timedelta(
-                days=settings.REFRESH_TOKEN_EXPIRE_DAYS
-            ).total_seconds())
-        )
+        raise ConflictError()
+    
+    hashed_password = hash_password(password)
+    user_object = UserData(
+        username=username,
+        email=email,
+        hash_password=hashed_password
+    )
+    db.add(user_object)
+    db.flush()
+    access_token = create_access_token({"sub": str(user_object.id)})
+    refresh_token = create_refresh_token({"sub": str(user_object.id)})
+    join_user_token(user_object.id, refresh_token, db)
+    return TokenCookiesModel(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        access_expires_in=int(timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        ).total_seconds()),
+        refresh_expires_in=int(timedelta(
+            days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+        ).total_seconds())
+    )
 
 
 def authenticate_user(
@@ -72,29 +75,29 @@ def authenticate_user(
         password (str): Пароль пользователя.
         db (_type_): Объект сессии БД.
 
+    Raises:
+        IncorrectLoginInput: Неверный логин или пароль.
+
     Returns:
-        TokenCookiesModel: Объект с данными для coockie.
+        TokenCookiesModel: Объект с данными для cookie.
     """
     user_object = db.scalar(select(UserData).where(UserData.email == email))
-    if user_object:
-        if verify_password(password, user_object.hash_password):
-            access_token = create_access_token({"sub": str(user_object.id)})
-            refresh_token = create_refresh_token({"sub": str(user_object.id)})
-            join_user_token(user_object.id, refresh_token, db)
-            return TokenCookiesModel(
-                access_token=access_token,
-                refresh_token=refresh_token,
-                access_expires_in=int(timedelta(
-                    minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-                ).total_seconds()),
-                refresh_expires_in=int(timedelta(
-                    days=settings.REFRESH_TOKEN_EXPIRE_DAYS
-                ).total_seconds())
-            )
-        else:
-            raise HTTPException(status_code=400, detail="Неверный логин или пароль.")
-    else:
-        raise HTTPException(status_code=400, detail="Неверный логин или пароль.")
+    if not user_object or not verify_password(password, user_object.hash_password):
+        raise IncorrectInput(detail="Неверный логин или пароль")
+    
+    access_token = create_access_token({"sub": str(user_object.id)})
+    refresh_token = create_refresh_token({"sub": str(user_object.id)})
+    join_user_token(user_object.id, refresh_token, db)
+    return TokenCookiesModel(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        access_expires_in=int(timedelta(
+            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        ).total_seconds()),
+        refresh_expires_in=int(timedelta(
+            days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+        ).total_seconds())
+    )
 
 
 def join_user_token(user_id: int, refresh_token: str, db: Session) -> None:
@@ -130,10 +133,14 @@ def delete_refresh_token(refresh_token: str, db: Session) -> None:
     Args:
         refresh_token (str): Refresh token.
         db (Session): Объект сессии БД.
+    Raises:
+        NotFoundError: Refresh токен не найден.
     """
     usertoken_object = db.scalar(
         select(UserTokenData).where(UserTokenData.token == refresh_token)
     )
-    if usertoken_object:
-        db.delete(usertoken_object)
-        db.commit()
+    if not usertoken_object:
+        raise NotFoundError(detail="Refresh токен не найден")
+    db.delete(usertoken_object)
+    db.commit()
+    
