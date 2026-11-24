@@ -1,14 +1,23 @@
 """Модуль бизнес-логики для сервиса Рецептов"""
 import base64
+from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from weasyprint import HTML
 
-from src.common import CurrentUserModel
+from src.common import TEMPLATES, CurrentUserModel
 
-from .models import CategoryData, IngredientData, RecipeData, RecipeIngredientData
+from .models import (
+    CategoryData,
+    CommentData,
+    IngredientData,
+    RecipeData,
+    RecipeIngredientData,
+    RecipeReactionData,
+)
 from .schemas import NewRecipeModel
 
 
@@ -130,3 +139,38 @@ def get_recipes_from_db(db: Session) -> dict[str, list]:
             )
         recipes_data.append(recipe_data)
     return {"recipes_data": recipes_data}
+
+
+def add_new_reaction_for_recipe(user_object: CurrentUserModel, recipe_id: int, reaction_data: dict, db: Session):
+    reaction_object = RecipeReactionData(
+        recipe_id=recipe_id,
+        user_id=user_object.id,
+        is_like=reaction_data["is_like"],
+        created_at=datetime.now(UTC)
+    )
+    db.add(reaction_object)
+    db.commit()
+
+
+def add_new_comment_for_recipe(user_object: CurrentUserModel, recipe_id: int, comment_data: dict, db: Session,):
+    comment_object = CommentData(
+        body=comment_data["body"],
+        user_id=user_object.id,
+        recipe_id=recipe_id,
+        created_at=datetime.now(UTC)
+    )
+    db.add(comment_object)
+    db.commit()
+
+
+def export_recipe_for_user(recipe_id: int, db: Session):
+    template_object = TEMPLATES.get_template("export_pdf.html")
+    recipe_object = db.scalar(select(RecipeData).where(RecipeData.id == recipe_id))
+    recipe_data = recipe_object.get_dict()
+    recipe_data["category"] = recipe_object.category_obj.name
+    recipe_data["image"] = base64.b64encode(recipe_data["image"]).decode("utf-8")
+    template_object = template_object.render(
+        recipe_data = recipe_data
+    )
+    pdf_bytes = HTML(string=template_object).write_pdf()
+    return pdf_bytes

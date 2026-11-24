@@ -1,13 +1,20 @@
 """Модуль эндпоинтов для сервиса Рецептов"""
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from sqlalchemy.orm import Session
 
 from src.common import TEMPLATES, CurrentUserModel
 from src.dependencies import get_current_user, get_db
 
 from .schemas import NewRecipeModel
-from .service import add_new_recipe, get_profile_from_db, get_recipes_from_db
+from .service import (
+    add_new_comment_for_recipe,
+    add_new_reaction_for_recipe,
+    add_new_recipe,
+    export_recipe_for_user,
+    get_profile_from_db,
+    get_recipes_from_db,
+)
 
 router = APIRouter(prefix="/Service", tags=["BusinessProcess"])
 
@@ -77,17 +84,36 @@ def create_recipe(
 @router.post("/Reaction/{recipe_id}")
 async def add_reaction(
     request: Request,
+    recipe_id: int,
+    current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
-):
+) -> Response:
     reaction_data = await request.json()
-    pass
+    add_new_reaction_for_recipe(current_user, recipe_id, reaction_data, db)
+    return Response(status_code=200)
 
 
 #Функционал добавления комментария
 @router.post("/Comment/{recipe_id}")
 async def add_comment(
     request: Request,
+    recipe_id: int,
+    current_user: CurrentUserModel = Depends(get_current_user),
     db: Session = Depends(get_db)
-):
+) -> Response:
     comment_data = await request.json()
-    pass
+    add_new_comment_for_recipe(current_user, recipe_id, comment_data, db)
+    return Response(status_code=200)
+
+
+@router.post("/Export/{recipe_id}")
+def export_recipe(recipe_id: int, db: Session = Depends(get_db)) -> Response:
+    pdf_bytes = export_recipe_for_user(recipe_id, db)
+    return Response(
+        status_code=200,
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=recipe_{recipe_id}.pdf"
+        }
+    )
