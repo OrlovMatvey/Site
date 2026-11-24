@@ -6,7 +6,6 @@ from typing import Any
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from weasyprint import HTML
 
 from src.common import TEMPLATES, CurrentUserModel
 
@@ -164,6 +163,7 @@ def add_new_comment_for_recipe(user_object: CurrentUserModel, recipe_id: int, co
 
 
 def export_recipe_for_user(recipe_id: int, db: Session):
+    """
     template_object = TEMPLATES.get_template("export_pdf.html")
     recipe_object = db.scalar(select(RecipeData).where(RecipeData.id == recipe_id))
     recipe_data = recipe_object.get_dict()
@@ -174,3 +174,4 @@ def export_recipe_for_user(recipe_id: int, db: Session):
     )
     pdf_bytes = HTML(string=template_object).write_pdf()
     return pdf_bytes
+    """

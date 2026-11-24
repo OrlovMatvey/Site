@@ -6,6 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("formFieldsContainer");
     let rowId = null
 
+    // ДОБАВЛЕНИЕ ЗАПИСИ
+    const openBtn = document.getElementById('openModalBtn');
+    openBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Отменяем переход по ссылке #
+        modal.style.display = "flex";
+    });
+
     // ЛОГИКА УДАЛЕНИЯ
     document.querySelectorAll(".btn-delete").forEach(button => {
         button.addEventListener("click", async (e) => {
@@ -67,11 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (response.ok){
-                alert("Данные успешно сохранены!");
+                console.log("Данные успешно сохранены!");
                 window.location.reload();
             }
         } catch (error) {
-            alert("Ошибка при отправке данных на сервер");
+            console.log("Ошибка при отправке данных на сервер");
         }
     });
 });
