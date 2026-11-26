@@ -1,4 +1,4 @@
-#Доделать
+# Доделать
 class AppException(Exception):
     status_code = 400
     detail = "Произошла ошибка"
@@ -23,9 +23,11 @@ class IncorrectInput(AppException):
     status_code = 400
     detail = "Некорректный ввод"
 
+
 class UnauthorizedError(AppException):
     status_code = 401
     detail = "Требуется авторизация"
+
 
 class ConflictError(AppException):
     status_code = 409

@@ -1,0 +1,214 @@
+<mxfile host="app.diagrams.net" agent="SYNTX.AI">
+  <diagram id="er-recipes" name="ER-диаграмма">
+    <mxGraphModel dx="1414" dy="1178" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ent1" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="UserData" vertex="1">
+          <mxGeometry height="160" width="230" x="40" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ent1_f0" parent="ent1" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent1_f1" parent="ent1" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="username" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent1_f2" parent="ent1" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="email" vertex="1">
+          <mxGeometry height="26" width="230" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="ent1_f3" parent="ent1" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="hash_password" vertex="1">
+          <mxGeometry height="26" width="230" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="ent1_f4" parent="ent1" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="is_admin" vertex="1">
+          <mxGeometry height="26" width="230" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="ent2" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="UserTokens" vertex="1">
+          <mxGeometry height="160" width="230" x="330" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ent2_f0" parent="ent2" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent2_f1" parent="ent2" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="token" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent2_f2" parent="ent2" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="created_at" vertex="1">
+          <mxGeometry height="26" width="230" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="ent2_f3" parent="ent2" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="expired_at" vertex="1">
+          <mxGeometry height="26" width="230" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="ent2_f4" parent="ent2" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK user_id" vertex="1">
+          <mxGeometry height="26" width="230" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="RecipeData" vertex="1">
+          <mxGeometry height="238" width="230" x="620" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f0" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f1" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="title" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f2" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK category_id" vertex="1">
+          <mxGeometry height="26" width="230" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f3" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="body" vertex="1">
+          <mxGeometry height="26" width="230" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f4" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="image" vertex="1">
+          <mxGeometry height="26" width="230" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f5" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK user_id" vertex="1">
+          <mxGeometry height="26" width="230" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f6" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="count_likes" vertex="1">
+          <mxGeometry height="26" width="230" y="186" as="geometry" />
+        </mxCell>
+        <mxCell id="ent3_f7" parent="ent3" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="count_dislikes" vertex="1">
+          <mxGeometry height="26" width="230" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="ent4" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="CommentData" vertex="1">
+          <mxGeometry height="134" width="230" x="1010" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ent4_f0" parent="ent4" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent4_f1" parent="ent4" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="body" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent4_f2" parent="ent4" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK user_id" vertex="1">
+          <mxGeometry height="26" width="230" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="ent4_f3" parent="ent4" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK recipe_id" vertex="1">
+          <mxGeometry height="26" width="230" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="ent5" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="FavoriteRecipeData" vertex="1">
+          <mxGeometry height="108" width="230" x="1010" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="ent5_f0" parent="ent5" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent5_f1" parent="ent5" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK user_id" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent5_f2" parent="ent5" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK recipe_id" vertex="1">
+          <mxGeometry height="26" width="230" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="ent6" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="CategoryData" vertex="1">
+          <mxGeometry height="82" width="230" x="40" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="ent6_f0" parent="ent6" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent6_f1" parent="ent6" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="name" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent7" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="IngredientData" vertex="1">
+          <mxGeometry height="82" width="230" x="199" y="537" as="geometry" />
+        </mxCell>
+        <mxCell id="ent7_f0" parent="ent7" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent7_f1" parent="ent7" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="name" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent8" parent="1" style="swimlane;html=1;startSize=30;rounded=0;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#000000;fontFamily=Arial;fontSize=13;fontStyle=1;align=center;" value="RecipeIngredientData" vertex="1">
+          <mxGeometry height="160" width="230" x="620" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="ent8_f0" parent="ent8" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="PK id" vertex="1">
+          <mxGeometry height="26" width="230" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ent8_f1" parent="ent8" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK recipe_id" vertex="1">
+          <mxGeometry height="26" width="230" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ent8_f2" parent="ent8" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#000000;" value="FK ingredient_id" vertex="1">
+          <mxGeometry height="26" width="230" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="ent8_f3" parent="ent8" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="volume" vertex="1">
+          <mxGeometry height="26" width="230" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="ent8_f4" parent="ent8" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;fontFamily=Arial;fontSize=12;fillColor=#ffffff;strokeColor=#000000;" value="unit" vertex="1">
+          <mxGeometry height="26" width="230" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1" edge="1" parent="1" source="ent1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent2" value="">
+          <mxGeometry relative="1" x="-0.451" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="97" />
+              <mxPoint x="300" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel2" edge="1" parent="1" source="ent1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent3" value="">
+          <mxGeometry relative="1" x="-0.0468" as="geometry">
+            <Array as="points">
+              <mxPoint x="297" y="96" />
+              <mxPoint x="297" y="226" />
+              <mxPoint x="445" y="226" />
+              <mxPoint x="445" y="215" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel3" edge="1" parent="1" source="ent1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent4" value="">
+          <mxGeometry relative="1" x="-0.0286" as="geometry">
+            <Array as="points">
+              <mxPoint x="155" y="-4" />
+              <mxPoint x="956" y="-4" />
+              <mxPoint x="956" y="137" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel4" edge="1" parent="1" source="ent3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent4" value="">
+          <mxGeometry relative="1" x="0.3058" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="930" y="85" />
+              <mxPoint x="930" y="167" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel5" edge="1" parent="1" source="ent1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent5" value="">
+          <mxGeometry relative="1" x="0.2248" as="geometry">
+            <Array as="points">
+              <mxPoint x="8" y="95" />
+              <mxPoint x="8" y="369" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel6" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="ent5_f2" value="">
+          <mxGeometry relative="1" x="-0.2399" as="geometry">
+            <Array as="points">
+              <mxPoint x="903" y="84" />
+              <mxPoint x="903" y="395" />
+            </Array>
+            <mxPoint x="850" y="84" as="sourcePoint" />
+            <mxPoint x="890" y="396" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel7" edge="1" parent="1" source="ent6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent3" value="">
+          <mxGeometry relative="1" x="-0.0433" as="geometry">
+            <Array as="points">
+              <mxPoint x="576" y="431" />
+              <mxPoint x="576" y="135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel8" edge="1" parent="1" source="ent3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent8" value="">
+          <mxGeometry relative="1" x="0.163" as="geometry">
+            <Array as="points">
+              <mxPoint x="878" y="84" />
+              <mxPoint x="878" y="568" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel9" edge="1" parent="1" source="ent7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERoneToMany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;fontFamily=Arial;fontSize=11;" target="ent8" value="">
+          <mxGeometry relative="1" x="-0.0583" as="geometry">
+            <Array as="points">
+              <mxPoint x="524.5" y="578" />
+              <mxPoint x="524.5" y="593" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
