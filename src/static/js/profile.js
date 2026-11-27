@@ -85,6 +85,8 @@ function showModal(card) {
             document.getElementById("modalIngredients2").textContent += element
         }
     }
+    document.getElementById("likeButton").dataset.id = card.dataset.id;
+    document.getElementById("dislikeButton").dataset.id = card.dataset.id;
     document.getElementById("exportButton").href = "/Service/Export/"+card.dataset.id
     document.getElementById("modalText2").textContent = card.dataset.body;
     document.getElementById("modalImage2").src = card.querySelector("img").src;
@@ -95,3 +97,36 @@ function showModal(card) {
 function closeModal() {
     document.getElementById("recipeModal2").style.display = "none";
 }
+
+const likeBut = document.getElementById("likeButton")
+const dislikeBut = document.getElementById("dislikeButton")
+likeBut.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const data = {}
+    data["is_like"]=true
+    const url = "/Service/Reaction/"+likeBut.dataset.id
+    try{
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(data)
+        });
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
+dislikeBut.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const data = {}
+    data["is_like"]=false
+    const url = "/Service/Reaction/"+dislike.dataset.id
+    try{
+        const response = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify(data)
+        });
+    }
+    catch (error) {
+        console.log(error)
+    }
+})
