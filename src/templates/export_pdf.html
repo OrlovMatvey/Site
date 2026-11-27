@@ -152,26 +152,11 @@
         <div class="section">
             <h2>Ингредиенты</h2>
             <div class="ingredients-box">
-                {% if recipe_data.ingredients is iterable and recipe_data.ingredients is not string %}
-                    {% if recipe_data.ingredients[0] is mapping %}
-                        <table class="ingredients-table">
-                            {% for item in recipe_data.ingredients %}
-                                <tr>
-                                    <td class="ing-name">{{ item.name }}</td>
-                                    <td class="ing-amount">{{ item.amount }}</td>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    {% else %}
-                        <ul class="ingredients-list">
-                            {% for item in recipe_data.ingredients %}
-                                <li>{{ item }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% else %}
-                    <div class="instructions-content">{{ recipe_data.ingredients }}</div>
-                {% endif %}
+                {% set list = namespace(text="") %}
+                {% for key, value in recipe_data.ingredients.items() %}
+                        {% set list.text = list.text + key + ": " + value + ", " %}
+                {% endfor %}
+                <div class="instructions-content">{{ list.text }}</div>
             </div>
         </div>
     {% endif %}

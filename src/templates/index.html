@@ -11,6 +11,7 @@
     <div class="recipes-grid">
         {% for recipe in recipes_data %}
         <article class="recipe-card" 
+        data-id="{{recipe.id}}"
         data-title="{{ recipe.title }}"
         data-category="{{ recipe.category }}"
         data-ingredients="{{ recipe.ingredients }}"
@@ -57,6 +58,7 @@
                     <label class="labelo" for="modalText2">Категория:</label>
                     <span id="modalCategory2"></span>
                 </div>
+                <a href="" id="exportButton" class="btn-small">Скачать</a>
                 <div class="rating-actions">
                     <!-- Лайк -->
                     <button type="button" class="vote-btn like {% if user_vote == 'like' %}active{% endif %}">

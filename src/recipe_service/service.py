@@ -158,6 +158,12 @@ def export_recipe_for_user(recipe_id: int, db: Session) -> bytes:
 
     recipe_data = recipe_object.get_dict()
     recipe_data["category"] = recipe_object.category_obj.name
+    recipe_data["ingredients"] = {}
+
+    for recipe_ingredient in recipe_object.ingredients:
+        recipe_data["ingredients"][recipe_ingredient.ingredient_obj.name] = (
+            str(recipe_ingredient.volume)+str(recipe_ingredient.unit)
+        )
 
     if recipe_data.get("image"):
         recipe_data["image"] = base64.b64encode(recipe_data["image"]).decode("utf-8")

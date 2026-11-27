@@ -8,6 +8,7 @@ function showModal(card) {
             document.getElementById("modalIngredients2").textContent += element
         }
     }
+    document.getElementById("exportButton").href = "/Service/Export/"+card.dataset.id
     document.getElementById("modalText2").textContent = card.dataset.body;
     document.getElementById("modalImage2").src = card.querySelector("img").src;
 
