@@ -108,6 +108,7 @@ likeBut.addEventListener("click", async (e) => {
     try{
         const response = await fetch(url, {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
     }
@@ -119,7 +120,7 @@ dislikeBut.addEventListener("click", async (e) => {
     e.preventDefault();
     const data = {}
     data["is_like"]=false
-    const url = "/Service/Reaction/"+dislike.dataset.id
+    const url = "/Service/Reaction/"+dislikeBut.dataset.id
     try{
         const response = await fetch(url, {
             method: "POST",
