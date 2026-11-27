@@ -6,13 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("formFieldsContainer");
     let rowId = null
 
-    // ДОБАВЛЕНИЕ ЗАПИСИ
-    const openBtn = document.getElementById('openModalBtn');
-    openBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Отменяем переход по ссылке #
-        modal.style.display = "flex";
-    });
-
     // ЛОГИКА УДАЛЕНИЯ
     document.querySelectorAll(".btn-delete").forEach(button => {
         button.addEventListener("click", async (e) => {
@@ -30,6 +23,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
+    });
+
+    // ДОБАВЛЕНИЕ ЗАПИСИ
+    const openBtn = document.getElementById('openModalBtn');
+    openBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Отменяем переход по ссылке #
+        rowId = null
+        editForm.reset();
+        modal.style.display = "flex";
     });
 
     // ЛОГИКА ИЗМЕНЕНИЯ
@@ -65,9 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (value.toLowerCase() === "нет"){value = false};
             data[key] = value;
         });
-
+        const url = rowId?`/Admin/${currentTable}/${rowId}`:`/Admin/Add/${currentTable}`;
         try {
-            const response = await fetch(`/Admin/${currentTable}/${rowId}`, {
+            const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)

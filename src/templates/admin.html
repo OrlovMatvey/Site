@@ -27,13 +27,16 @@
                     <a href="/Admin?table=RecipeIngredient" class="{% if active_table == 'RecipeIngredient' %}active{% endif %}">📜 Ингредиенты рецептов</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=Comment" class="{% if active_table == 'Comment' %}active{% endif %}">💬 Комментарии</a>
+                    <a style="display: none;" href="/Admin?table=Comment" class="{% if active_table == 'Comment' %}active{% endif %}">💬 Комментарии</a>
                 </li>
                 <li>
                     <a href="/Admin?table=Category" class="{% if active_table == 'Category' %}active{% endif %}">🏷️ Категории</a>
                 </li>
                 <li>
-                    <a href="/Admin?table=FavoriteRecipe" class="{% if active_table == 'FavoriteRecipe' %}active{% endif %}">⭐ Избранные рецепты</a>
+                    <a style="display: none;" href="/Admin?table=FavoriteRecipe" class="{% if active_table == 'FavoriteRecipe' %}active{% endif %}">⭐ Избранные рецепты</a>
+                </li>
+                <li>
+                    <a href="/Admin?table=RecipeReaction" class="{% if active_table == 'RecipeReaction' %}active{% endif %}">👍 Реакции</a>
                 </li>
             </ul>
         </aside>

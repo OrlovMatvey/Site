@@ -6,6 +6,7 @@ from .models import (
     IngredientData,
     RecipeData,
     RecipeIngredientData,
+    RecipeReactionData,
 )
 from .router import router as service_router
 
@@ -16,5 +17,6 @@ __all__ = [
     "IngredientData",
     "RecipeData",
     "RecipeIngredientData",
+    "RecipeReactionData",
     "service_router"
 ]

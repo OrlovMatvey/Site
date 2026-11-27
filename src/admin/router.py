@@ -1,12 +1,17 @@
 """Модуль эндпоинтов для сервиса Администрации"""
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 
 from src.common import TEMPLATES
 from src.dependencies import get_current_admin, get_db
 
-from .service import delete_record_by_id, get_table_data_from_db, update_record_by_id
+from .service import (
+    add_new_record,
+    delete_record_by_id,
+    get_table_data_from_db,
+    update_record_by_id,
+)
 
 router = APIRouter(
     prefix="/Admin", tags=["AdminProcess"],
@@ -38,6 +43,17 @@ def get_admin_page(
             "active_table": table
         }
     )
+
+
+@router.post("/Add/{table_name}")
+async def add_record(
+    table_name: str,
+    request: Request,
+    db: Session = Depends(get_db)
+) -> Response:
+    record_data = await request.json()
+    add_new_record(table_name, record_data, db)
+    return Response(status_code=204)
 
 
 @router.delete("/{table_name}/{record_id}")

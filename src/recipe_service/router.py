@@ -80,7 +80,7 @@ def create_recipe(
     return RedirectResponse(url="/Service/Profile", status_code=303)
 
 
-#Функционал добавления реакции Лайк/Дизлайк
+# Функционал добавления реакции Лайк/Дизлайк
 @router.post("/Reaction/{recipe_id}")
 async def add_reaction(
     request: Request,
@@ -93,7 +93,7 @@ async def add_reaction(
     return Response(status_code=200)
 
 
-#Функционал добавления комментария
+# Функционал добавления комментария
 @router.post("/Comment/{recipe_id}")
 async def add_comment(
     request: Request,
@@ -106,7 +106,7 @@ async def add_comment(
     return Response(status_code=200)
 
 
-@router.post("/Export/{recipe_id}")
+@router.get("/Export/{recipe_id}")
 def export_recipe(recipe_id: int, db: Session = Depends(get_db)) -> Response:
     pdf_bytes = export_recipe_for_user(recipe_id, db)
     return Response(

@@ -2,8 +2,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from src.exceptions import NotFoundError
 from src.auth import UserData, UserTokenData
+from src.exceptions import NotFoundError
 from src.recipe_service import (
     CategoryData,
     CommentData,
@@ -11,6 +11,7 @@ from src.recipe_service import (
     IngredientData,
     RecipeData,
     RecipeIngredientData,
+    RecipeReactionData,
 )
 
 TABLES_MAP = {
@@ -20,6 +21,7 @@ TABLES_MAP = {
     "Ingredient": IngredientData,
     "RecipeIngredient": RecipeIngredientData,
     "FavoriteRecipe": FavoriteRecipeData,
+    "RecipeReaction": RecipeReactionData,
     "Category": CategoryData,
     "Comment": CommentData
 }
@@ -65,6 +67,23 @@ def update_record_by_id(
     )
     if not record_object:
         raise NotFoundError(detail="Запись не найдена")
+    model_fields = table_model.get_table_fields()
+    for model_field in model_fields:
+        if model_field != "id" and model_field != "image":
+            setattr(record_object, model_field, record_data[model_field])
+    db.add(record_object)
+    db.commit()
+
+
+def add_new_record(
+    table_name: str,
+    record_data: dict,
+    db: Session
+) -> None:
+    table_model = TABLES_MAP.get(table_name)
+    if not table_model:
+        raise NotFoundError(detail="Таблица не найдена")
+    record_object = table_model()
     model_fields = table_model.get_table_fields()
     for model_field in model_fields:
         if model_field != "id":

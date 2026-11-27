@@ -3,9 +3,10 @@ import base64
 from datetime import UTC, datetime
 from typing import Any
 
+from playwright.sync_api import sync_playwright
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-# from weasyprint import HTML
+
 from src.common import TEMPLATES, CurrentUserModel
 
 from .models import (
@@ -103,7 +104,6 @@ def add_new_recipe(
     return recipe_object
 
 
-
 def get_recipes_from_db(db: Session) -> dict[str, list]:
     """Получение информации из БД для шаблона главной страницы
 
@@ -152,16 +152,34 @@ def add_new_comment_for_recipe(user_object: CurrentUserModel, recipe_id: int, co
     db.commit()
 
 
-def export_recipe_for_user(recipe_id: int, db: Session):
-    """
+def export_recipe_for_user(recipe_id: int, db: Session) -> bytes:
     template_object = TEMPLATES.get_template("export_pdf.html")
     recipe_object = db.scalar(select(RecipeData).where(RecipeData.id == recipe_id))
+
     recipe_data = recipe_object.get_dict()
     recipe_data["category"] = recipe_object.category_obj.name
-    recipe_data["image"] = base64.b64encode(recipe_data["image"]).decode("utf-8")
-    template_object = template_object.render(
-        recipe_data = recipe_data
+
+    if recipe_data.get("image"):
+        recipe_data["image"] = base64.b64encode(recipe_data["image"]).decode("utf-8")
+
+    rendered_html = template_object.render(
+        recipe_data=recipe_data
     )
-    pdf_bytes = HTML(string=template_object).write_pdf()
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.set_content(rendered_html, wait_until="load")
+        pdf_bytes = page.pdf(
+            format="A4",
+            print_background=True,
+            margin={
+                "top": "18mm",
+                "bottom": "18mm",
+                "left": "20mm",
+                "right": "20mm"
+            }
+        )
+        browser.close()
+
     return pdf_bytes
-    """
